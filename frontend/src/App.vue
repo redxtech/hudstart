@@ -1,6 +1,6 @@
 <template>
   <main id="overlay">
-		<overlay
+		<component :is="overlayComponent"
 			:p1-name="one.name"
 			:p1-tag="one.tag"
 			:p1-score="one.score"
@@ -19,11 +19,12 @@
 </template>
 
 <script>
-import overlay from './components/overlays/default.vue'
+import { overlays } from './components/overlays/overlays.js'
 
 export default {
 	data() {
 		return {
+			overlayComponent: overlays.default,
 			one: {
 				name: 'player one',
 				tag: 'ssb',
@@ -42,9 +43,6 @@ export default {
 			grands: true,
 			bestOf: 5
 		}
-	},
-	components: {
-		overlay
 	}
 }
 </script>
