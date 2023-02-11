@@ -1,23 +1,29 @@
 <template>
 <div id="default-overlay">
 	<div>
-		<h1>{{ match }}, best of {{ bestOf }}</h1>
+		<h1>{{ match }} - Best of {{ bestOf }}</h1>
 	</div>
 	<div>
 		<h2>entrant one</h2>
-		<p>name: {{ p1Name }}</p>
-		<p>tag: {{ p1Tag }}</p>
-		<p>char: {{ p1Char }}</p>
-		<p>score: {{ p1Score }}</p>
-		<p v-if="grands">winners: {{ p1Winners }}</p>
+		<p>name: {{ p1.name }}</p>
+		<p>tag: {{ p1.tag || 'none' }}</p>
+		<div v-if="p1.char">
+			<p>char: {{ p1.char.name }}</p>
+			<img :src="p1.char.img" alt="">
+		</div>
+		<p>score: {{ p1.score }}</p>
+		<p v-if="grands">winners: {{ p1.winners }}</p>
 	</div>
 	<div>
 		<h2>entrant two</h2>
-		<p>name: {{ p2Name }}</p>
-		<p>tag: {{ p2Tag }}</p>
-		<p>char: {{ p2Char }}</p>
-		<p>score: {{ p2Score }}</p>
-		<p v-if="grands">winners: {{ p2Winners }}</p>
+		<p>name: {{ p2.name }}</p>
+		<p>tag: {{ p2.tag || 'none' }}</p>
+		<div v-if="p2.char">
+			<p>char: {{ p2.char.name }}</p>
+			<img :src="p2.char.img" alt="">
+		</div>
+		<p>score: {{ p2.score }}</p>
+		<p v-if="grands">winners: {{ p2.winners }}</p>
 	</div>
 </div>
 </template>
@@ -25,16 +31,14 @@
 <script>
 export default {
 	props: {
-		p1Name: { type: String, required: true },
-		p1Tag: { type: String, required: true },
-		p1Score: { type: Number, required: true },
-		p1Char: { type: String, required: true },
-		p1Winners: { type: Boolean, required: true },
-		p2Name: { type: String, required: true },
-		p2Tag: { type: String, required: true },
-		p2Score: { type: Number, required: true },
-		p2Char: { type: String, required: true },
-		p2Winners: { type: Boolean, required: true },
+		p1: {
+			type: Object,
+			required: true
+		},
+		p2: {
+			type: Object,
+			required: true
+		},
 		match: { type: String, required: true },
 		bestOf: { type: Number, default: 3 },
 		grands: { type: Boolean, default: false },
