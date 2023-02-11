@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.177.0/"
+  },
+  "tasks": {
+    "run": "deno run --allow-env --allow-read --allow-net ./main.ts",
+    "dev": "deno run --allow-env --allow-read --allow-net --watch ./main.ts"
+  }
+}

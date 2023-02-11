@@ -41,7 +41,7 @@ export default {
 			query: CharacterList,
 			variables () {
 				return {
-					game: this.set.event?.videogame.slug || ''
+					game: this.set.event?.videogame.slug || 'game/ultimate'
 				}
 			}
 		}
@@ -70,7 +70,7 @@ export default {
 				winners
 			}
 		},
-		setSet (set) { this.setID = set }
+		setSet (setID) { this.setID = setID }
 	},
 	computed: {
 		p1 () {
@@ -84,12 +84,17 @@ export default {
 		// TODO fix best of, doesn't work
 		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 }
 	},
-	// mounted () {
-	// 	const conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
-	// 	conn.onmessage = event => {
-	// 		console.log(event)
-	// 	}
-	// }
+	mounted () {
+		const conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
+		conn.onmessage = event => {
+			console.log(event)
+			const data = JSON.parse(event.data)
+			if (data.target === 'OVERLAY') {
+				console.log(data)
+				this.setSet(data.setID)
+			}
+		}
+	}
 }
 </script>
 
