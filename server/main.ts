@@ -1,28 +1,55 @@
 // calls start.gg api for live data on a current match for use in a HUD for a stream element
-import { WebSocketClient, WebSocketServer } from "https://deno.land/x/websocket@v0.1.4/mod.ts";
+import { serve } from "https://deno.land/std@0.87.0/http/server.ts"
+import {
+		acceptWebSocket,
+		WebSocket,
+		isWebSocketCloseEvent
+
+} from "https://deno.land/std@0.87.0/ws/mod.ts"
+
+import { v1 } from 'std/uuid/mod.ts'
 import 'std/dotenv/load.ts'
 
 // main function
-const main = () => {
-	const wss = new WebSocketServer(8080)
-	wss.on("connection", function (ws: WebSocketClient) {
-		ws.on("message", function (message: string) {
-			console.log(message)
-			ws.send(message)
+const main = async () => {
+	const sockets = new Map<string, WebSocket>()
+
+	const broadcastMessage = (message: string, uid: string) => {
+		sockets.forEach((socket, id) => {
+			if (!socket.isClosed && uid !== id)
+				socket.send(message)
 		})
-		setTimeout(() => {
-			ws.send(JSON.stringify({
-				target: 'OVERLAY',
-				setID: '56902969'
-			}))
-		}, 2000)
-		setTimeout(() => {
-			ws.send(JSON.stringify({
-				target: 'OVERLAY',
-				setID: '56794669'
-			}))
-		}, 5000)
-	})
+	}
+
+	const handleWs = async (sock: WebSocket) => {
+		const uid = v1.generate().toString()
+		console.log('connected: ' + uid)
+		sockets.set(uid, sock)
+
+		for await (const ev of sock) {
+			if (isWebSocketCloseEvent(ev)) {
+				sockets.delete(uid)
+				return
+			}
+
+			if (typeof ev === 'string') {
+				console.log(ev)
+				broadcastMessage(ev, uid)
+			}
+		}
+	}
+
+	for await (const req of serve({ port: 8080 })) {
+			const { conn, r: bufReader, w: bufWriter, headers } = req;
+
+			acceptWebSocket({
+					conn,
+					bufReader,
+					bufWriter,
+					headers,
+			}).then(handleWs)
+			// .catch(console.error)
+	}
 }
 
 main()

@@ -1,10 +1,6 @@
-import { createApp } from 'vue'
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 import { createApolloProvider } from '@vue/apollo-option'
-
-import '@/style.css'
-import App from './App.vue'
 
 // apollo client setup
 const httpLink = createHttpLink({
@@ -30,11 +26,7 @@ const apolloClient = new ApolloClient({
 	link: authLink.concat(httpLink)
 })
 
-const apolloProvider = createApolloProvider({
+export const apolloProvider = createApolloProvider({
   defaultClient: apolloClient,
 })
 
-// create vue app and use apollo provider
-createApp(App)
-	.use(apolloProvider)
-	.mount('#app')

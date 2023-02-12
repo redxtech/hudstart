@@ -31,9 +31,9 @@ export default {
 		set: {
 			query: InProgressSet,
 			variables () {
-      	return {
+				return {
           set: this.setID
-      	}
+				}
 			},
 			// pollInterval: this.refreshInterval * 1000
 		},
@@ -41,7 +41,7 @@ export default {
 			query: CharacterList,
 			variables () {
 				return {
-					game: this.set.event?.videogame.slug || 'game/ultimate'
+					game: this.set?.event?.videogame.slug || 'game/ultimate'
 				}
 			}
 		}
@@ -58,7 +58,7 @@ export default {
 				.find(s => s.entrant.id === set.slots[pIndex]?.entrant.id)
 				?.selectionValue
 			const char = this.videogame?.characters?.find(c => c.id === charID)
-			
+
 			return {
 				name,
 				tag,
@@ -87,11 +87,10 @@ export default {
 	mounted () {
 		const conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
 		conn.onmessage = event => {
-			console.log(event)
 			const data = JSON.parse(event.data)
 			if (data.target === 'OVERLAY') {
 				console.log(data)
-				this.setSet(data.setID)
+				// this.setSet(data.setID)
 			}
 		}
 	}
