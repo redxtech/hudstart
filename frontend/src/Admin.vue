@@ -134,7 +134,7 @@ export default {
 					.filter(set => set.slots.every(slot => slot.entrant !== null))
 					.map(s => {
 						return {
-							label: `${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
+							label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
 							value: s.id
 						}
 					})

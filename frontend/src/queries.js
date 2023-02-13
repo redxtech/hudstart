@@ -25,6 +25,11 @@ query EventSets($event: String!) {
       nodes {
         id
         fullRoundText
+				phaseGroup {
+          phase {
+            name
+          }
+        }
         slots {
           entrant {
 						participants {
