@@ -19,7 +19,7 @@
 								placeholder="https://start.gg/tournament/..."
 								style="width: calc(100% - 200px)"
 							/>
-							<a-button type="primary" @click="updateTournamentURL">set</a-button>
+							<a-button type="primary" @click="updateTournamentURL">save</a-button>
 						</a-input-group>
 					</a-form-item>
 					<a-typography-title :level="4">
@@ -31,7 +31,21 @@
 								v-model:value="token"
 								style="width: calc(100% - 200px)"
 							/>
-							<a-button type="primary" @click="updateToken">set</a-button>
+							<a-button type="primary" @click="updateToken">save</a-button>
+						</a-input-group>
+					</a-form-item>
+					<a-typography-title :level="4">
+						select event
+					</a-typography-title>
+					<a-form-item>
+						<a-input-group compact>
+							<a-select
+								v-model:value="event"
+								placeholder="select an event"
+								style="width: 200px"
+								:options="eventOptions"
+							></a-select>
+							<a-button type="primary" @click="updateEvent">save</a-button>
 						</a-input-group>
 					</a-form-item>
 					<a-typography-title :level="4">
@@ -42,18 +56,15 @@
 							<a-select
 								v-model:value="set"
 								show-search
-								placeholder="Select a person"
+								placeholder="select a set"
 								style="width: 200px"
 								:options="setSelectOptions"
 								:filter-option="filterOption"
 							></a-select>
-							<a-button type="primary" @click="updateToken">set</a-button>
+							<a-button type="primary" @click="updateSet">save</a-button>
 						</a-input-group>
 					</a-form-item>
 				</a-form>
-				<label for="set">set </label>
-				<input id="set" type="text" v-model="setID" />
-				<button @click="updateSet">update</button>
 			</div>
 		</main>
 	</div>
@@ -64,27 +75,25 @@ export default {
 	name: 'Admin',
 	data () {
 		return {
-			setID: '',
 			conn: undefined,
 			tournament: '',
 			token: '',
+			event: {},
+			eventOptions: [
+				{ label: 'ultimate singles', value: 'ult-singles' },
+				{ label: 'melee singles', value: 'melee-singles' }
+			],
 			set: {},
 			setSelectOptions: [
 				{ label: 'p1 vs. p2', value: 'set1' },
 				{ label: 'p3 vs. p4', value: 'set2' }
-			]
+			],
+			filterOption: (input, option) => {
+      	return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    	}
 		}
 	},
 	methods: {
-		updateSet() {
-			if (this.conn) {
-				this.conn.send(JSON.stringify({
-					target: 'OVERLAY',
-					type: 'SETID',
-					value: this.setID
-				}))
-			}
-		},
 		updateTournamentURL() {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
@@ -100,6 +109,24 @@ export default {
 					target: 'OVERLAY',
 					type: 'TOKEN',
 					value: this.token
+				}))
+			}
+		},
+		updateEvent () {
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'EVENT',
+					value: this.event
+				}))
+			}
+		},
+		updateSet() {
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'SET',
+					value: this.set
 				}))
 			}
 		}
