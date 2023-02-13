@@ -54,6 +54,11 @@
 							:filter-option="filterOption"
 						></a-select>
 					</a-form-item>
+					<a-form-item class="filter-switch" label="show completed">
+						<a-switch
+							v-model:checked="showCompleted"
+						/>
+					</a-form-item>
 					<a-form-item>
 						<a-space>
 							<a-button type="primary" @click="updateSet">save</a-button>
@@ -80,6 +85,8 @@ export default {
 			events: [],
 			set: undefined,
 			sets: [],
+			setPage: 0,
+			showCompleted: true,
 			filterOption: (input, option) => {
       	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     	}
@@ -99,7 +106,9 @@ export default {
 			query: SetsInEvent,
 			variables () {
 				return {
-					event: this.event || ''
+					event: this.event || '',
+					page: this.setPage,
+					perPage: 10
 				}
 			},
 			update: data => data?.event?.sets?.nodes
@@ -128,7 +137,7 @@ export default {
 		setSelection () {
 			if (this.sets) {
 				return this.sets
-					.filter(set => set.slots.every(slot => slot.entrant !== null))
+					.filter(set => set.slots.every(slot => slot.entrant !== null) && (this.showCompleted ? true : set.state !== 3))
 					.map(s => {
 						return {
 							label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
@@ -160,7 +169,7 @@ export default {
 			}
 		},
 		clearSet() {
-			this.set = ''
+			this.set = undefined
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
 					target: 'OVERLAY',
@@ -171,11 +180,11 @@ export default {
 	},
 	watch: {
 		tournamentSlug () {
-			this.event = ''
-			this.set = ''
+			this.event = undefined
+			this.set = undefined
 		},
 		event () {
-			this.set = ''
+			this.set = undefined
 		}
 	},
 	mounted () {

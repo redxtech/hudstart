@@ -14,16 +14,17 @@ query EventsInTourney($tourney: String!) {
 `
 
 export const SetsInEvent = gql`
-query EventSets($event: String!) {
+query EventSets($event: String!, $page: Int!, $perPage: Int!) {
   event(slug: $event) {
     id
     sets (
-      page: 1
-      perPage: 30
+      page: $page
+      perPage: $perPage
       sortType: STANDARD
     ) {
       nodes {
         id
+				state
         fullRoundText
 				phaseGroup {
           phase {
