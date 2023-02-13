@@ -45,18 +45,20 @@
 						select set
 					</a-typography-title>
 					<a-form-item>
-						<a-input-group compact>
-							<a-select
-								v-model:value="set"
-								show-search
-								placeholder="select a set"
-								style="width: calc(100% - 200px)"
-								:options="setSelection"
-								:filter-option="filterOption"
-							></a-select>
+						<a-select
+							v-model:value="set"
+							show-search
+							placeholder="select a set"
+							style="width: calc(100% - 200px)"
+							:options="setSelection"
+							:filter-option="filterOption"
+						></a-select>
+					</a-form-item>
+					<a-form-item>
+						<a-space>
 							<a-button type="primary" @click="updateSet">save</a-button>
 							<a-button type="danger" @click="clearSet">clear</a-button>
-						</a-input-group>
+						</a-space>
 					</a-form-item>
 				</a-form>
 			</div>
@@ -74,9 +76,9 @@ export default {
 			conn: undefined,
 			tournament: '',
 			token: '',
-			event: '',
+			event: undefined,
 			events: [],
-			set: '',
+			set: undefined,
 			sets: [],
 			filterOption: (input, option) => {
       	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
