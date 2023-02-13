@@ -1,5 +1,18 @@
 import gql from 'graphql-tag'
 
+export const EventsInTourney = gql`
+query EventsInTourney($tourney: String!) {
+  tournament(slug: $tourney) {
+    name
+    events {
+      id
+      slug
+      name
+    }
+  }
+}
+`
+
 export const InProgressSet = gql`
 query InProgressSet($set: ID!) {
   set(id: $set) {

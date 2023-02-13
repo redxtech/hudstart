@@ -43,7 +43,7 @@
 								v-model:value="event"
 								placeholder="select an event"
 								style="width: 200px"
-								:options="eventOptions"
+								:options="eventSelection"
 							></a-select>
 							<a-button type="primary" @click="updateEvent">save</a-button>
 						</a-input-group>
@@ -71,6 +71,8 @@
 </template>
 
 <script>
+import { EventsInTourney } from './queries.js'
+
 export default {
 	name: 'Admin',
 	data () {
@@ -79,6 +81,7 @@ export default {
 			tournament: '',
 			token: '',
 			event: {},
+			events: [],
 			eventOptions: [
 				{ label: 'ultimate singles', value: 'ult-singles' },
 				{ label: 'melee singles', value: 'melee-singles' }
@@ -91,6 +94,38 @@ export default {
 			filterOption: (input, option) => {
       	return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     	}
+		}
+	},
+	apollo: {
+		events: {
+			query: EventsInTourney,
+			variables () {
+				return {
+					tourney: this.tournamentSlug
+				}
+			},
+			update: data => data?.tournament?.events
+		}
+	},
+	computed: {
+		tournamentSlug () {
+			if (this.tournament) {
+				return this.tournament.replace(/https:\/\/(www\.)?start.gg\/tournament/, 'tournament')
+			} else {
+				return 'tournament'
+			}
+		},
+		eventSelection () {
+			if (this.events) {
+				return this.events.map(e => {
+					return {
+						label: e.name,
+						value: e.slug
+					}
+				})
+			} else {
+				return []
+			}
 		}
 	},
 	methods: {
