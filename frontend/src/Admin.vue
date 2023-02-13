@@ -12,14 +12,11 @@
 						tournament url
 					</a-typography-title>
 					<a-form-item>
-						<a-input-group compact>
-							<a-input
-								v-model:value="tournament"
-								placeholder="https://start.gg/tournament/..."
-								style="width: calc(100% - 200px)"
-							/>
-							<a-button type="primary" @click="updateTournamentURL">save</a-button>
-						</a-input-group>
+						<a-input
+							v-model:value="tournament"
+							style="width: calc(100% - 200px)"
+							placeholder="https://start.gg/tournament/..."
+						/>
 					</a-form-item>
 					<a-typography-title :level="4">
 						api token
@@ -37,15 +34,12 @@
 						select event
 					</a-typography-title>
 					<a-form-item>
-						<a-input-group compact>
-							<a-select
-								v-model:value="event"
-								placeholder="select an event"
-								style="width: calc(100% - 200px)"
-								:options="eventSelection"
-							></a-select>
-							<a-button type="primary" @click="updateEvent">save</a-button>
-						</a-input-group>
+						<a-select
+							v-model:value="event"
+							placeholder="select an event"
+							style="width: calc(100% - 200px)"
+							:options="eventSelection"
+						></a-select>
 					</a-form-item>
 					<a-typography-title :level="4">
 						select set
@@ -144,15 +138,6 @@ export default {
 		}
 	},
 	methods: {
-		updateTournamentURL() {
-			if (this.conn) {
-				this.conn.send(JSON.stringify({
-					target: 'OVERLAY',
-					type: 'TOURNAMENT_URL',
-					value: this.tournament
-				}))
-			}
-		},
 		updateToken() {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
@@ -162,21 +147,12 @@ export default {
 				}))
 			}
 		},
-		updateEvent () {
-			if (this.conn) {
-				this.conn.send(JSON.stringify({
-					target: 'OVERLAY',
-					type: 'EVENT',
-					value: this.event
-				}))
-			}
-		},
 		updateSet() {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
 					target: 'OVERLAY',
 					type: 'SET',
-					value: this.set
+					value: this.set.toString()
 				}))
 			}
 		}

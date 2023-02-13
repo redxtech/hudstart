@@ -20,8 +20,7 @@ export default {
 	data() {
 		return {
 			overlayComponent: markRaw(overlays.default),
-			setID: '56794669',
-			// setID: '56902969',
+			setID: '',
 			refreshInterval: 10,
 			set: {},
 			videogame: {}
@@ -89,9 +88,9 @@ export default {
 		conn.onmessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'OVERLAY') {
-				if (data.type === 'SETID') {
-					if (data.setID.length === 8 && parseInt(data.setID)) {
-						this.setSet(data.setID)
+				if (data.type === 'SET') {
+					if (data.value.length === 8 && parseInt(data.value)) {
+						this.setSet(data.value.toString())
 					}
 				}
 			}
