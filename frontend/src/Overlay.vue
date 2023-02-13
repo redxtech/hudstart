@@ -48,7 +48,7 @@ export default {
 	},
 	methods: {
 		createPlayer (set, pIndex) {
-			const name = set?.slots?.[pIndex]?.entrant.name || 'player one name'
+			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || 'player one name'
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
 			const score = set?.slots?.[pIndex]?.standing.stats.score.value || 0
 			const winners = true

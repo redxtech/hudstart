@@ -17,13 +17,19 @@ export const SetsInEvent = gql`
 query EventSets($event: String!) {
   event(slug: $event) {
     id
-    sets {
+    sets (
+      page: 1
+      perPage: 30
+      sortType: STANDARD
+    ) {
       nodes {
         id
         fullRoundText
         slots {
           entrant {
-            name
+						participants {
+							gamerTag
+						}
           }
         }
       }
