@@ -7,7 +7,6 @@
 			<div class="tournament">
 				<a-form
 					name="tournament"
-    			:wrapper-col="{ span: 8 }"
 				>
 					<a-typography-title :level="4">
 						tournament url
@@ -42,7 +41,7 @@
 							<a-select
 								v-model:value="event"
 								placeholder="select an event"
-								style="width: 200px"
+								style="width: calc(100% - 200px)"
 								:options="eventSelection"
 							></a-select>
 							<a-button type="primary" @click="updateEvent">save</a-button>
@@ -57,8 +56,8 @@
 								v-model:value="set"
 								show-search
 								placeholder="select a set"
-								style="width: 200px"
-								:options="setSelectOptions"
+								style="width: calc(100% - 200px)"
+								:options="setSelection"
 								:filter-option="filterOption"
 							></a-select>
 							<a-button type="primary" @click="updateSet">save</a-button>
@@ -71,7 +70,7 @@
 </template>
 
 <script>
-import { EventsInTourney } from './queries.js'
+import { EventsInTourney, SetsInEvent } from './queries.js'
 
 export default {
 	name: 'Admin',
@@ -80,19 +79,12 @@ export default {
 			conn: undefined,
 			tournament: '',
 			token: '',
-			event: {},
+			event: '',
 			events: [],
-			eventOptions: [
-				{ label: 'ultimate singles', value: 'ult-singles' },
-				{ label: 'melee singles', value: 'melee-singles' }
-			],
-			set: {},
-			setSelectOptions: [
-				{ label: 'p1 vs. p2', value: 'set1' },
-				{ label: 'p3 vs. p4', value: 'set2' }
-			],
+			set: '',
+			sets: [],
 			filterOption: (input, option) => {
-      	return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     	}
 		}
 	},
@@ -105,6 +97,15 @@ export default {
 				}
 			},
 			update: data => data?.tournament?.events
+		},
+		sets: {
+			query: SetsInEvent,
+			variables () {
+				return {
+					event: this.event || ''
+				}
+			},
+			update: data => data?.event?.sets?.nodes
 		}
 	},
 	computed: {
@@ -123,6 +124,20 @@ export default {
 						value: e.slug
 					}
 				})
+			} else {
+				return []
+			}
+		},
+		setSelection () {
+			if (this.sets) {
+				return this.sets
+					.filter(set => set.slots.every(slot => slot.entrant !== null))
+					.map(s => {
+						return {
+							label: `${s.fullRoundText} - ${s.slots[0].entrant.name} vs. ${s.slots[1].entrant.name}`,
+							value: s.id
+						}
+					})
 			} else {
 				return []
 			}

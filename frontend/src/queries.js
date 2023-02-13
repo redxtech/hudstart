@@ -13,6 +13,25 @@ query EventsInTourney($tourney: String!) {
 }
 `
 
+export const SetsInEvent = gql`
+query EventSets($event: String!) {
+  event(slug: $event) {
+    id
+    sets {
+      nodes {
+        id
+        fullRoundText
+        slots {
+          entrant {
+            name
+          }
+        }
+      }
+    }
+  }
+}
+`
+
 export const InProgressSet = gql`
 query InProgressSet($set: ID!) {
   set(id: $set) {
