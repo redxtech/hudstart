@@ -89,8 +89,10 @@ export default {
 		conn.onmessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'OVERLAY') {
-				if (data.setID.length === 8 && parseInt(data.setID)) {
-					this.setSet(data.setID)
+				if (data.type === 'SETID') {
+					if (data.setID.length === 8 && parseInt(data.setID)) {
+						this.setSet(data.setID)
+					}
 				}
 			}
 		}

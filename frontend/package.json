@@ -11,6 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.7",
     "@vue/apollo-option": "^4.0.0-beta.2",
+    "ant-design-vue": "^3.2.15",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "vue": "^3.2.45",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
+    "unplugin-vue-components": "^0.23.0",
     "vite": "^4.1.0"
   }
 }
