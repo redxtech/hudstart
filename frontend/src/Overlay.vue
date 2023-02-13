@@ -92,6 +92,8 @@ export default {
 					if (data.value.length === 8 && parseInt(data.value)) {
 						this.setSet(data.value.toString())
 					}
+				} else if (data.type = 'CLEAR') {
+					this.setSet('')
 				}
 			}
 		}

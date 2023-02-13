@@ -55,6 +55,7 @@
 								:filter-option="filterOption"
 							></a-select>
 							<a-button type="primary" @click="updateSet">save</a-button>
+							<a-button type="danger" @click="clearSet">clear</a-button>
 						</a-input-group>
 					</a-form-item>
 				</a-form>
@@ -155,6 +156,24 @@ export default {
 					value: this.set.toString()
 				}))
 			}
+		},
+		clearSet() {
+			this.set = ''
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'CLEAR'
+				}))
+			}
+		}
+	},
+	watch: {
+		tournamentSlug () {
+			this.event = ''
+			this.set = ''
+		},
+		event () {
+			this.set = ''
 		}
 	},
 	mounted () {
