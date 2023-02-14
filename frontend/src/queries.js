@@ -3,11 +3,42 @@ import gql from 'graphql-tag'
 export const EventsInTourney = gql`
 query EventsInTourney($tourney: String!) {
   tournament(slug: $tourney) {
+		id
     name
     events {
       id
       slug
       name
+    }
+  }
+}
+`
+
+export const StreamQueue = gql`
+query StreamQueueOnTournament($tourney: String!) {
+  tournament(slug: $tourney) {
+    id
+    streamQueue {
+      stream {
+        streamSource
+        streamName
+      }
+      sets {
+        id
+        fullRoundText
+        phaseGroup {
+          phase {
+            name
+          }
+        }
+        slots {
+          entrant {
+            participants {
+              gamerTag
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -51,6 +82,7 @@ query EventSets($event: String!, $page: Int!, $perPage: Int!) {
 export const InProgressSet = gql`
 query InProgressSet($set: ID!) {
   set(id: $set) {
+		id
     state
 		fullRoundText
 		setGamesType

@@ -18,33 +18,60 @@
 							placeholder="https://start.gg/tournament/..."
 						/>
 					</a-form-item>
+					<!-- <a-typography-title :level="4"> -->
+					<!-- 	api token -->
+					<!-- </a-typography-title> -->
+					<!-- <a-form-item> -->
+					<!-- 	<a-input-group compact> -->
+					<!-- 		<a-input -->
+					<!-- 			v-model:value="token" -->
+					<!-- 			style="width: calc(100% - 200px)" -->
+					<!-- 		/> -->
+					<!-- 		<a-button type="primary" @click="updateToken">save</a-button> -->
+					<!-- 	</a-input-group> -->
+					<!-- </a-form-item> -->
 					<a-typography-title :level="4">
-						api token
+						set selection mode
 					</a-typography-title>
 					<a-form-item>
-						<a-input-group compact>
-							<a-input
-								v-model:value="token"
-								style="width: calc(100% - 200px)"
-							/>
-							<a-button type="primary" @click="updateToken">save</a-button>
-						</a-input-group>
+						<a-radio-group v-model:value="useStreamQueue">
+							<a-radio-button :value="false">manual selection</a-radio-button>
+							<a-radio-button :value="true">stream queue</a-radio-button>
+						</a-radio-group>
 					</a-form-item>
-					<a-typography-title :level="4">
-						select event
-					</a-typography-title>
-					<v-select
-						v-model="event"
-						:options="eventSelection"
-						:reduce="event => event.value"
-						:filterable="false"
-						placeholder="select an event"
-						class="selector"
-					>
-						<template #no-options>
-							<em style="opacity: 0.5">no events available</em>
-						</template>
-					</v-select>
+					<template v-if="useStreamQueue">
+						<a-typography-title :level="4">
+							select stream
+						</a-typography-title>
+						<v-select
+							v-model="stream"
+							:options="streamSelection"
+							:filterable="false"
+							placeholder="select a stream"
+							class="selector"
+						>
+							<template #no-options>
+								<em style="opacity: 0.5">no streams available</em>
+							</template>
+						</v-select>
+					</template>
+					<template v-else>
+						<a-typography-title :level="4">
+							select event
+						</a-typography-title>
+						<v-select
+							v-model="event"
+							:options="eventSelection"
+							:reduce="event => event.value"
+							:filterable="false"
+							placeholder="select an event"
+							class="selector"
+						>
+							<template #no-options>
+								<em style="opacity: 0.5">no events available</em>
+							</template>
+						</v-select>
+					</template>
 					<a-typography-title :level="4">
 						select a set
 					</a-typography-title>
@@ -53,14 +80,14 @@
 						:options="setSelection"
 						:reduce="set => set.value"
 						placeholder="select a set"
-						:disabled="!this.event"
+						:disabled="!this.event && !(this.useStreamQueue && this.stream)"
 						class="selector"
 					>
 						<template v-slot:no-options="{ search, searching }">
 							<template v-if="searching">
 								<span style="opacity: 0.5">no sets matching <em>{{ search }}</em>.</span>
 							</template>
-							<em v-else style="opacity: 0.5">no events available</em>
+							<em v-else style="opacity: 0.5">no sets available</em>
 						</template>
 					</v-select>
 					<a-form-item class="filter-switch" label="show completed">
@@ -81,7 +108,7 @@
 </template>
 
 <script>
-import { EventsInTourney, SetsInEvent } from './queries.js'
+import { EventsInTourney, SetsInEvent, StreamQueue } from './queries.js'
 
 export default {
 	name: 'Admin',
@@ -90,6 +117,9 @@ export default {
 			conn: undefined,
 			tournament: undefined,
 			token: '',
+			useStreamQueue: false,
+			streamQueue: [],
+			stream: undefined,
 			event: undefined,
 			events: [],
 			set: undefined,
@@ -127,6 +157,16 @@ export default {
 			},
 			update: data => data?.event?.sets?.nodes,
 			skip: true
+		},
+		streamQueue: {
+			query: StreamQueue,
+			variables () {
+				return {
+					tourney: this.tournamentSlug
+				}
+			},
+			update: data => data?.tournament?.streamQueue,
+			skip: true
 		}
 	},
 	computed: {
@@ -149,18 +189,39 @@ export default {
 				return []
 			}
 		},
-		setSelection () {
-			if (this.sets) {
-				return this.sets
-					.filter(set => set.slots.every(slot => slot.entrant !== null) && (this.showCompleted ? true : set.state !== 3))
-					.map(s => {
-						return {
-							label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
-							value: s.id
-						}
-					})
+		streamSelection () {
+			if (this.streamQueue) {
+				return this.streamQueue.map(s => s.stream?.streamName)
 			} else {
 				return []
+			}
+		},
+		setSelection () {
+			if (this.useStreamQueue) {
+				if (this.stream) {
+					return this.streamQueue
+						.find(s => s.stream.streamName === this.stream)
+						.sets
+						.map(s => {
+							return {
+								label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
+								value: s.id
+							}
+						})
+				}
+			} else {
+				if (this.sets) {
+					return this.sets
+						.filter(set => set.slots.every(slot => slot.entrant !== null) && (this.showCompleted ? true : set.state !== 3))
+						.map(s => {
+							return {
+								label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
+								value: s.id
+							}
+						})
+				} else {
+					return []
+				}
 			}
 		}
 	},
@@ -229,6 +290,7 @@ export default {
 			this.event = undefined
 			this.set = undefined
 			this.$apollo.queries.events.skip = !this.tournament
+			this.$apollo.queries.streamQueue.skip = !this.tournament
 		},
 		event () {
 			this.set = undefined
