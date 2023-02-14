@@ -292,6 +292,9 @@ export default {
 			this.$apollo.queries.events.skip = !this.tournament
 			this.$apollo.queries.streamQueue.skip = !this.tournament
 		},
+		useStreamQueue () {
+			this.set = undefined
+		},
 		event () {
 			this.set = undefined
 			this.moreSets = true
