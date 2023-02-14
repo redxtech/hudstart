@@ -291,9 +291,19 @@ export default {
 			this.set = undefined
 			this.$apollo.queries.events.skip = !this.tournament
 			this.$apollo.queries.streamQueue.skip = !this.tournament
+			if (this.useStreamQueue) {
+				this.stream = this.stream || this.streamQueue?.[0]?.stream?.streamName
+			} else {
+				this.event = this.event || this.events?.[0]?.slug
+			}
 		},
 		useStreamQueue () {
 			this.set = undefined
+			if (this.useStreamQueue) {
+				this.stream = this.stream || this.streamQueue?.[0]?.stream?.streamName
+			} else {
+				this.event = this.event || this.events?.[0]?.slug
+			}
 		},
 		event () {
 			this.set = undefined
