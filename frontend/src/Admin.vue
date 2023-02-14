@@ -33,27 +33,23 @@
 					<a-typography-title :level="4">
 						select event
 					</a-typography-title>
-					<a-form-item>
-						<a-select
-							v-model:value="event"
-							placeholder="select an event"
-							style="width: calc(100% - 200px)"
-							:options="eventSelection"
-						></a-select>
-					</a-form-item>
+					<v-select
+						v-model="event"
+						:options="eventSelection"
+						:reduce="event => event.value"
+						placeholder="select an event"
+						class="selector"
+					/>
 					<a-typography-title :level="4">
-						select set
+						select a set
 					</a-typography-title>
-					<a-form-item>
-						<a-select
-							v-model:value="set"
-							show-search
-							placeholder="select a set"
-							style="width: calc(100% - 200px)"
-							:options="setSelection"
-							:filter-option="filterOption"
-						></a-select>
-					</a-form-item>
+					<v-select
+						v-model="set"
+						:options="setSelection"
+						:reduce="set => set.value"
+						placeholder="select a set"
+						class="selector"
+					/>
 					<a-form-item class="filter-switch" label="show completed">
 						<a-switch
 							v-model:checked="showCompleted"
@@ -79,13 +75,17 @@ export default {
 	data () {
 		return {
 			conn: undefined,
-			tournament: '',
+			tournament: undefined,
 			token: '',
 			event: undefined,
 			events: [],
 			set: undefined,
 			sets: [],
-			setPage: 0,
+			setPage: 1,
+			updatePage: 1,
+			perPage: 10,
+			moreSets: true,
+			moreSetsInterval: undefined,
 			showCompleted: true,
 			filterOption: (input, option) => {
       	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -100,7 +100,8 @@ export default {
 					tourney: this.tournamentSlug
 				}
 			},
-			update: data => data?.tournament?.events
+			update: data => data?.tournament?.events,
+			skip: true
 		},
 		sets: {
 			query: SetsInEvent,
@@ -108,10 +109,11 @@ export default {
 				return {
 					event: this.event || '',
 					page: this.setPage,
-					perPage: 10
+					perPage: this.perPage
 				}
 			},
-			update: data => data?.event?.sets?.nodes
+			update: data => data?.event?.sets?.nodes,
+			skip: true
 		}
 	},
 	computed: {
@@ -176,15 +178,51 @@ export default {
 					type: 'CLEAR'
 				}))
 			}
+		},
+		getMoreSets() {
+			if (this.event && this.moreSets) {
+				this.updatePage++
+				this.$apollo.queries.sets.fetchMore({
+					// New variables
+					variables: {
+						event: this.event,
+						page: this.updatePage,
+						perPage: this.perPage
+					},
+					updateQuery: (previousResult, { fetchMoreResult }) => {
+						this.moreSets = fetchMoreResult.event.sets.pageInfo.page < fetchMoreResult.event.sets.pageInfo.totalPages
+
+						return { 
+							event: {
+								__typename: previousResult.event.__typename,
+								id: previousResult.event.id,
+								sets: {
+									__typename: previousResult.event.sets.__typename,
+									pageInfo: previousResult.event.sets.pageInfo,
+									nodes: [
+										...previousResult.event.sets.nodes,
+										...fetchMoreResult.event.sets.nodes
+									]
+								}
+							}
+						}
+					}
+				})
+			}
 		}
 	},
 	watch: {
 		tournamentSlug () {
 			this.event = undefined
 			this.set = undefined
+			this.$apollo.queries.events.skip = !this.tournament
 		},
 		event () {
 			this.set = undefined
+			this.moreSets = true
+			this.setPage = 1
+			this.updatePage = 1
+			this.$apollo.queries.sets.skip = !this.event
 		}
 	},
 	mounted () {
@@ -195,6 +233,10 @@ export default {
 				console.log(data)
 			}
 		}
+
+		this.moreSetsInterval = setInterval(() => {
+			this.getMoreSets()
+		}, 1 * 1000)
 	}
 }
 </script>
@@ -206,5 +248,14 @@ export default {
 
 	h1 {
 		margin: 2rem auto;
+	}
+
+	.selector {
+		width: calc(100% - 200px);
+	 	margin-bottom: 24px;
+	}
+
+	.tournament {
+		--vs-search-input-placeholder-color: darkgray;
 	}
 </style>

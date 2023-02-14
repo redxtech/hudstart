@@ -22,6 +22,10 @@ query EventSets($event: String!, $page: Int!, $perPage: Int!) {
       perPage: $perPage
       sortType: STANDARD
     ) {
+			pageInfo {
+        totalPages
+				page
+      }
       nodes {
         id
 				state
