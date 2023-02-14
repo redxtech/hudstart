@@ -21,7 +21,7 @@ export default {
 		return {
 			overlayComponent: markRaw(overlays.default),
 			setID: '',
-			refreshInterval: 10,
+			refreshInterval: 5,
 			set: {},
 			videogame: {}
 		}
@@ -34,7 +34,7 @@ export default {
           set: this.setID
 				}
 			},
-			// pollInterval: this.refreshInterval * 1000
+			// pollInterval: 5 * 1000
 		},
 		videogame: {
 			query: CharacterList,
