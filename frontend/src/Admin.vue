@@ -37,9 +37,14 @@
 						v-model="event"
 						:options="eventSelection"
 						:reduce="event => event.value"
+						:filterable="false"
 						placeholder="select an event"
 						class="selector"
-					/>
+					>
+						<template #no-options>
+							<em style="opacity: 0.5">no events available</em>
+						</template>
+					</v-select>
 					<a-typography-title :level="4">
 						select a set
 					</a-typography-title>
@@ -48,8 +53,16 @@
 						:options="setSelection"
 						:reduce="set => set.value"
 						placeholder="select a set"
+						:disabled="!this.event"
 						class="selector"
-					/>
+					>
+						<template v-slot:no-options="{ search, searching }">
+							<template v-if="searching">
+								<span style="opacity: 0.5">no sets matching <em>{{ search }}</em>.</span>
+							</template>
+							<em v-else style="opacity: 0.5">no events available</em>
+						</template>
+					</v-select>
 					<a-form-item class="filter-switch" label="show completed">
 						<a-switch
 							v-model:checked="showCompleted"
