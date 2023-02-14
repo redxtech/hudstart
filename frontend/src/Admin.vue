@@ -97,8 +97,8 @@
 							<a-button type="default" @click="showCommentatorModal">show commentator modal</a-button>
 							<a-button type="default" @click="showTokenModal">set api token</a-button>
 						</a-space>
-						<a-modal v-model:visible="commentatorModalVisible" title="commentator information">
-							<commentator-page />
+						<a-modal v-model:visible="commentatorModalVisible" title="commentator information" @ok="hideCommentatorModal">
+							<commentator-page :set="sets.find(s => s.id === this.set)" />
 						</a-modal>
 						<a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
 							<a-form-item>
@@ -134,7 +134,7 @@ export default {
 			sets: [],
 			setPage: 1,
 			updatePage: 1,
-			perPage: 10,
+			perPage: 20,
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
@@ -300,6 +300,9 @@ export default {
 		},
 		showCommentatorModal () {
 			this.commentatorModalVisible = true
+		},
+		hideCommentatorModal () {
+			this.commentatorModalVisible = false
 		},
 		showTokenModal () {
 			this.tokenModalVisible = true
