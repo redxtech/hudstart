@@ -88,12 +88,20 @@ export default {
 		conn.onmessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'OVERLAY') {
-				if (data.type === 'SET') {
-					if (data.value.length === 8 && parseInt(data.value)) {
-						this.setSet(data.value.toString())
-					}
-				} else if (data.type = 'CLEAR') {
-					this.setSet('')
+				switch (data.type) {
+					case 'SET':
+						if (data.value.length === 8 && parseInt(data.value)) {
+							this.setSet(data.value.toString())
+						}
+						break;
+					case 'CLEAR':
+						this.setSet('')
+						break
+					case 'TOKEN':
+						window.location.reload()
+						break
+					default:
+						break;
 				}
 			}
 		}

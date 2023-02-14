@@ -18,18 +18,6 @@
 							placeholder="https://start.gg/tournament/..."
 						/>
 					</a-form-item>
-					<!-- <a-typography-title :level="4"> -->
-					<!-- 	api token -->
-					<!-- </a-typography-title> -->
-					<!-- <a-form-item> -->
-					<!-- 	<a-input-group compact> -->
-					<!-- 		<a-input -->
-					<!-- 			v-model:value="token" -->
-					<!-- 			style="width: calc(100% - 200px)" -->
-					<!-- 		/> -->
-					<!-- 		<a-button type="primary" @click="updateToken">save</a-button> -->
-					<!-- 	</a-input-group> -->
-					<!-- </a-form-item> -->
 					<a-typography-title :level="4">
 						set selection mode
 					</a-typography-title>
@@ -101,6 +89,21 @@
 							<a-button type="danger" @click="clearSet">clear</a-button>
 						</a-space>
 					</a-form-item>
+					<a-typography-title :level="4">
+						tools
+					</a-typography-title>
+					<a-form-item>
+						<a-space>
+							<a-button type="default" @click="showTokenModal">set api token</a-button>
+						</a-space>
+						<a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
+							<a-form-item>
+								<a-input
+									v-model:value="token"
+								/>
+							</a-form-item>
+						</a-modal>
+					</a-form-item>
 				</a-form>
 			</div>
 		</main>
@@ -130,6 +133,7 @@ export default {
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
+			tokenModalVisible: false,
 			filterOption: (input, option) => {
       	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     	}
@@ -226,21 +230,12 @@ export default {
 		}
 	},
 	methods: {
-		updateToken() {
-			if (this.conn) {
-				this.conn.send(JSON.stringify({
-					target: 'OVERLAY',
-					type: 'TOKEN',
-					value: this.token
-				}))
-			}
-		},
 		updateSet() {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
 					target: 'OVERLAY',
 					type: 'SET',
-					value: this.set.toString()
+					value: this.set?.toString()
 				}))
 			}
 		},
@@ -283,6 +278,22 @@ export default {
 					}
 				})
 			}
+		},
+		setToken () {
+			this.tokenModalVisible = false
+			localStorage.setItem('api-token', this.token)
+
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'TOKEN'
+				}))
+			}
+
+			window.location.reload()
+		},
+		showTokenModal () {
+			this.tokenModalVisible = true
 		}
 	},
 	watch: {
@@ -325,6 +336,8 @@ export default {
 		this.moreSetsInterval = setInterval(() => {
 			this.getMoreSets()
 		}, 1 * 1000)
+
+		this.token = localStorage.getItem('api-token')
 	}
 }
 </script>
