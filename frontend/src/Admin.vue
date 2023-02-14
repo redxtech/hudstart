@@ -94,8 +94,12 @@
 					</a-typography-title>
 					<a-form-item>
 						<a-space>
+							<a-button type="default" @click="showCommentatorModal">show commentator modal</a-button>
 							<a-button type="default" @click="showTokenModal">set api token</a-button>
 						</a-space>
+						<a-modal v-model:visible="commentatorModalVisible" title="commentator information">
+							<commentator-page />
+						</a-modal>
 						<a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
 							<a-form-item>
 								<a-input
@@ -111,6 +115,7 @@
 </template>
 
 <script>
+import CommentatorPage from './components/commentator.vue'
 import { EventsInTourney, SetsInEvent, StreamQueue } from './queries.js'
 
 export default {
@@ -133,6 +138,7 @@ export default {
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
+			commentatorModalVisible: false,
 			tokenModalVisible: false,
 			filterOption: (input, option) => {
       	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -292,6 +298,9 @@ export default {
 
 			window.location.reload()
 		},
+		showCommentatorModal () {
+			this.commentatorModalVisible = true
+		},
 		showTokenModal () {
 			this.tokenModalVisible = true
 		}
@@ -338,6 +347,9 @@ export default {
 		}, 1 * 1000)
 
 		this.token = localStorage.getItem('api-token')
+	},
+	components: {
+		CommentatorPage
 	}
 }
 </script>
