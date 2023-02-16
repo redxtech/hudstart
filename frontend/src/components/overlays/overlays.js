@@ -1,7 +1,7 @@
 import defaultOverlay from './default.vue'
-import testOverlay from './test.vue'
+import simple from './simple.vue'
 
 export const overlays = {
 	default: defaultOverlay,
-	test: testOverlay
+	simple
 }

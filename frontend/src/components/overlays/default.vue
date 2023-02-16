@@ -1,7 +1,7 @@
 <template>
 <div id="default-overlay">
 	<div class="name name-l">
-		<p><span v-if="p1.tag" class="tag">[{{ p1.tag }}] </span>{{ p1.name }}<span v-if="grands" class="winners"> [W]</span></p>
+		<p><span v-if="p1.tag" class="tag">[{{ p1.tag }}] </span>{{ p1.name }}</p>
 	</div>
 	<div class="score score-l">
 		<p>{{ p1.score }}</p>
@@ -38,6 +38,7 @@ export default {
 		},
 		match: { type: String, required: true },
 		bestOf: { type: Number, default: 3 },
+		event: { type: String, required: true },
 		grands: { type: Boolean, default: false },
 	}
 }

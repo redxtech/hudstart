@@ -7,6 +7,7 @@
 			:p2="p2"
 			:match="match"
 			:best-of="bestOf"
+			:event="event"
 			:grands="grands"
 		/>
 	</main>
@@ -81,9 +82,10 @@ export default {
 			return this.createPlayer(this.set, 1)
 		},
 		match () { return this.set.fullRoundText || 'unknown round' },
+		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 },
+		event () { return this.set?.event?.name || 'unknown event' },
 		grands () { return this.set.fullRoundText === 'Grand Final' },
 		// TODO fix best of, doesn't work
-		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 },
 		overlayComponent () {
 			return markRaw(overlays[this.overlay])
 		}

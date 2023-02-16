@@ -88,6 +88,7 @@ query InProgressSet($set: ID!) {
 		setGamesType
     totalGames
 		event {
+			name
       videogame {
         slug
       }
