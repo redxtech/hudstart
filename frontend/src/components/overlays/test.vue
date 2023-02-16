@@ -24,6 +24,7 @@
 
 <script>
 export default {
+	name: 'Test Overlay',
 	props: {
 		p1Name: { type: String, required: true },
 		p1Tag: { type: String, required: true },

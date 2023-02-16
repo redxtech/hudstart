@@ -26,6 +26,7 @@
 
 <script>
 export default {
+	name: 'Default Overlay',
 	props: {
 		p1: {
 			type: Object,
