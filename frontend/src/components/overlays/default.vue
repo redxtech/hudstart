@@ -60,7 +60,8 @@ export default {
 	color: white;
 	--p1-colour: #E1341E;
 	--p2-colour: #1ECBE1;
-	background-color: #0052a8;
+	background: rgb(0,128,199);
+	background: linear-gradient(180deg, #009fff 0%, #0052a8 100%);
 }
 
 .name {
