@@ -140,6 +140,11 @@ export default {
 		this.conn.addEventListener('close', onClose)
 
 		this.overlay = localStorage.getItem('overlay')
+	},
+	unmounted () {
+		this.conn.removeEventListener('close')
+		this.conn.close()
+		this.conn = null
 	}
 }
 </script>

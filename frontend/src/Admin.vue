@@ -427,6 +427,11 @@ export default {
 		this.token = localStorage.getItem('api-token')
 		this.overlay = localStorage.getItem('overlay')
 	},
+	unmounted () {
+		this.conn.removeEventListener('close')
+		this.conn.close()
+		this.conn = null
+	},
 	components: {
 		CommentatorPage
 	}
