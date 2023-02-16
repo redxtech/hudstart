@@ -47,7 +47,7 @@ export default {
 	},
 	methods: {
 		createPlayer (set, pIndex) {
-			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || 'player one name'
+			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || `player ${pIndex ? 'two' : 'one'} name`
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
 			const score = set?.slots?.[pIndex]?.standing.stats.score.value || 0
 			const winners = true
@@ -78,8 +78,8 @@ export default {
 		p2 () {
 			return this.createPlayer(this.set, 1)
 		},
-		match () { return this.set.fullRoundText || '' },
-		grands () { return this.set.fullRoundText === 'Grand Finals' },
+		match () { return this.set.fullRoundText || 'unknown round' },
+		grands () { return this.set.fullRoundText === 'Grand Final' },
 		// TODO fix best of, doesn't work
 		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 }
 	},
