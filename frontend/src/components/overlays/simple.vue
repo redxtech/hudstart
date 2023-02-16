@@ -87,7 +87,7 @@ export default {
 	margin: 0 0.5rem;
 	padding: 0 0.4rem;
 	height: 100%;
-	min-width: 1rem;
+	width: 30px;
 	background-color: white;
 	color: black;
 }

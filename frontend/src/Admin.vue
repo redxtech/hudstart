@@ -90,6 +90,16 @@
 						</a-space>
 					</a-form-item>
 					<a-typography-title :level="4">
+						best of
+					</a-typography-title>
+					<a-form-item>
+						<a-radio-group v-model:value="bestOf">
+							<a-radio-button :value="1">best of 1</a-radio-button>
+							<a-radio-button :value="3">best of 3</a-radio-button>
+							<a-radio-button :value="5">best of 5</a-radio-button>
+						</a-radio-group>
+					</a-form-item>
+					<a-typography-title :level="4">
 						tools
 					</a-typography-title>
 					<a-form-item>
@@ -150,6 +160,7 @@ export default {
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
+			bestOf: 3,
 			overlay: 'default',
 			overlayModalVisible: false,
 			commentatorModalVisible: false,
@@ -371,6 +382,15 @@ export default {
 			this.setPage = 1
 			this.updatePage = 1
 			this.$apollo.queries.sets.skip = !this.event
+		},
+		bestOf () {
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'BESTOF',
+					value: this.bestOf
+				}))
+			}
 		}
 	},
 	mounted () {
