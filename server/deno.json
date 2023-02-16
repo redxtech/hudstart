@@ -1,9 +1,11 @@
 {
   "imports": {
-    "std/": "https://deno.land/std@0.177.0/"
+    "std/": "https://deno.land/std@0.177.0/",
+    "leaf/": "https://deno.land/x/leaf@v1.0.2/",
+    "open/": "https://deno.land/x/open@v0.0.5/"
   },
   "tasks": {
-    "run": "deno run --allow-env --allow-read --allow-net ./main.ts",
-    "dev": "deno run --allow-env --allow-read --allow-net --watch ./main.ts"
+    "run": "deno run --allow-env --allow-read --allow-run --allow-net ./main.ts",
+    "dev": "deno run --allow-env --allow-read --allow-run --allow-net --watch ./main.ts"
   }
 }

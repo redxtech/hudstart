@@ -1,54 +1,36 @@
 // calls start.gg api for live data on a current match for use in a HUD for a stream element
-import { serve } from "https://deno.land/std@0.87.0/http/server.ts"
-import {
-		acceptWebSocket,
-		WebSocket,
-		isWebSocketCloseEvent
-
-} from "https://deno.land/std@0.87.0/ws/mod.ts"
-
-import { v1 } from 'std/uuid/mod.ts'
 import 'std/dotenv/load.ts'
+// import { open } from 'open/index.ts'
+
+import { handleSocketReq } from './sockets.ts'
+import { handleStatic } from './static.ts';
 
 // main function
 const main = async () => {
+	// open browser windows
+	// open('http://localhost:5123')
+
+	// keep track of sockets
 	const sockets = new Map<string, WebSocket>()
 
-	const broadcastMessage = (message: string, uid: string) => {
-		sockets.forEach((socket, id) => {
-			if (!socket.isClosed && uid !== id)
-				socket.send(message)
-		})
-	}
+	async function handle(conn: Deno.Conn) {
+		const httpConn = Deno.serveHttp(conn);
+		for await (const requestEvent of httpConn) {
+			const url = new URL(requestEvent.request.url);
+			console.log(`path: ${url.pathname}`);
 
-	const handleWs = async (sock: WebSocket) => {
-		const uid = v1.generate().toString()
-		console.log('connected: ' + uid)
-		sockets.set(uid, sock)
-
-		for await (const ev of sock) {
-			if (isWebSocketCloseEvent(ev)) {
-				sockets.delete(uid)
-				return
-			}
-
-			if (typeof ev === 'string') {
-				console.log(ev)
-				broadcastMessage(ev, uid)
+			if (url.pathname === '/ws') {
+				await requestEvent.respondWith(handleSocketReq(sockets, requestEvent.request))
+			} else {
+				await handleStatic(requestEvent)
 			}
 		}
 	}
 
-	for await (const req of serve({ port: 8080 })) {
-			const { conn, r: bufReader, w: bufWriter, headers } = req;
+	const server = Deno.listen({ port: 8080 });
 
-			acceptWebSocket({
-					conn,
-					bufReader,
-					bufWriter,
-					headers,
-			}).then(handleWs)
-			// .catch(console.error)
+	for await (const conn of server) {
+		handle(conn);
 	}
 }
 
