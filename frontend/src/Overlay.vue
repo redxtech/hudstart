@@ -1,6 +1,8 @@
 <template>
   <main id="overlay">
-		<component :is="overlayComponent"
+		<component
+			:is="overlayComponent"
+			:key="overlay"
 			:p1="p1"
 			:p2="p2"
 			:match="match"
@@ -19,7 +21,7 @@ import { InProgressSet, CharacterList } from './queries.js'
 export default {
 	data() {
 		return {
-			overlayComponent: markRaw(overlays.default),
+			overlay: 'default',
 			setID: '',
 			refreshInterval: 5,
 			set: {},
@@ -81,7 +83,10 @@ export default {
 		match () { return this.set.fullRoundText || 'unknown round' },
 		grands () { return this.set.fullRoundText === 'Grand Final' },
 		// TODO fix best of, doesn't work
-		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 }
+		bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 },
+		overlayComponent () {
+			return markRaw(overlays[this.overlay])
+		}
 	},
 	mounted () {
 		const conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
@@ -93,7 +98,10 @@ export default {
 						if (data.value.length === 8 && parseInt(data.value)) {
 							this.setSet(data.value.toString())
 						}
-						break;
+						break
+					case 'OVERLAY':
+						this.overlay = data.value
+						break
 					case 'CLEAR':
 						this.setSet('')
 						break
@@ -101,10 +109,12 @@ export default {
 						window.location.reload()
 						break
 					default:
-						break;
+						break
 				}
 			}
 		}
+
+		this.overlay = localStorage.getItem('overlay')
 	}
 }
 </script>

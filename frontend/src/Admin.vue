@@ -14,7 +14,7 @@
 					<a-form-item>
 						<a-input
 							v-model:value="tournament"
-							style="width: calc(100% - 200px)"
+							style="width: 100%"
 							placeholder="https://start.gg/tournament/..."
 						/>
 					</a-form-item>
@@ -94,9 +94,20 @@
 					</a-typography-title>
 					<a-form-item>
 						<a-space>
+							<a-button type="default" @click="showOverlayModal">choose overlay</a-button>
 							<a-button type="default" @click="showCommentatorModal">show commentator modal</a-button>
 							<a-button type="default" @click="showTokenModal">set api token</a-button>
 						</a-space>
+						<a-modal v-model:visible="overlayModalVisible" title="choose overlay" @ok="setOverlay">
+							<a-form-item>
+								<v-select
+									v-model="overlay"
+									:options="overlaySelection"
+									:reduce="overlay => overlay.overlay"
+									class="selector"
+								/>
+							</a-form-item>
+						</a-modal>
 						<a-modal v-model:visible="commentatorModalVisible" title="commentator information" @ok="hideCommentatorModal">
 							<commentator-page :set="sets.find(s => s.id === this.set)" />
 						</a-modal>
@@ -117,6 +128,7 @@
 <script>
 import CommentatorPage from './components/commentator.vue'
 import { EventsInTourney, SetsInEvent, StreamQueue } from './queries.js'
+import { overlays } from './components/overlays/overlays.js'
 
 export default {
 	name: 'Admin',
@@ -138,6 +150,8 @@ export default {
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
+			overlay: 'default',
+			overlayModalVisible: false,
 			commentatorModalVisible: false,
 			tokenModalVisible: false,
 			filterOption: (input, option) => {
@@ -233,6 +247,14 @@ export default {
 					return []
 				}
 			}
+		},
+		overlaySelection () {
+			return Object.keys(overlays).map(overlay => {
+				return {
+					label: overlays[overlay].name,
+					overlay
+				}
+			})
 		}
 	},
 	methods: {
@@ -285,6 +307,27 @@ export default {
 				})
 			}
 		},
+		showOverlayModal () {
+			this.overlayModalVisible = true
+		},
+		setOverlay () {
+			this.overlayModalVisible = false
+			localStorage.setItem('overlay', this.overlay)
+
+			if (this.conn) {
+				this.conn.send(JSON.stringify({
+					target: 'OVERLAY',
+					type: 'OVERLAY',
+					value: this.overlay
+				}))
+			}
+		},
+		showCommentatorModal () {
+			this.commentatorModalVisible = true
+		},
+		hideCommentatorModal () {
+			this.commentatorModalVisible = false
+		},
 		setToken () {
 			this.tokenModalVisible = false
 			localStorage.setItem('api-token', this.token)
@@ -297,12 +340,6 @@ export default {
 			}
 
 			window.location.reload()
-		},
-		showCommentatorModal () {
-			this.commentatorModalVisible = true
-		},
-		hideCommentatorModal () {
-			this.commentatorModalVisible = false
 		},
 		showTokenModal () {
 			this.tokenModalVisible = true
@@ -350,6 +387,7 @@ export default {
 		}, 1 * 1000)
 
 		this.token = localStorage.getItem('api-token')
+		this.overlay = localStorage.getItem('overlay')
 	},
 	components: {
 		CommentatorPage
@@ -367,7 +405,7 @@ export default {
 	}
 
 	.selector {
-		width: calc(100% - 200px);
+		width: 100%;
 	 	margin-bottom: 24px;
 	}
 
