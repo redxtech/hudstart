@@ -395,12 +395,30 @@ export default {
 	},
 	mounted () {
 		this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
-		this.conn.onmessage = event => {
+
+		const onOpen = () => console.log('websocket connected')
+
+		const onMessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'ADMIN') {
 				console.log(data)
 			}
 		}
+
+		const onClose = () => {
+			this.conn = null
+			console.log('websocket closed')
+			setTimeout(() => {
+				this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
+				this.conn.addEventListener('open', onOpen)
+				this.conn.addEventListener('message', onMessage)
+				this.conn.addEventListener('close', onClose)
+			}, 3000)
+		}
+
+		this.conn.addEventListener('open', onOpen)
+		this.conn.addEventListener('message', onMessage)
+		this.conn.addEventListener('close', onClose)
 
 		this.moreSetsInterval = setInterval(() => {
 			this.getMoreSets()

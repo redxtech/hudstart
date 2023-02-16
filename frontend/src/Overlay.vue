@@ -22,12 +22,13 @@ import { InProgressSet, CharacterList } from './queries.js'
 export default {
 	data() {
 		return {
+			conn: undefined,
 			overlay: 'default',
 			setID: '',
 			refreshInterval: 5,
 			set: {},
 			bestOf: 3,
-			videogame: {}
+			videogame: {},
 		}
 	},
 	apollo: {
@@ -92,8 +93,11 @@ export default {
 		}
 	},
 	mounted () {
-		const conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
-		conn.onmessage = event => {
+		this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
+
+		const onOpen = () => console.log('websocket connected')
+
+		const onMessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'OVERLAY') {
 				switch (data.type) {
@@ -119,6 +123,21 @@ export default {
 				}
 			}
 		}
+
+		const onClose = () => {
+	    this.conn = null
+			console.log('websocket closed')
+			setTimeout(() => {
+				this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
+				this.conn.addEventListener('open', onOpen)
+				this.conn.addEventListener('message', onMessage)
+				this.conn.addEventListener('close', onClose)
+			}, 3000)
+		}
+
+		this.conn.addEventListener('open', onOpen)
+		this.conn.addEventListener('message', onMessage)
+		this.conn.addEventListener('close', onClose)
 
 		this.overlay = localStorage.getItem('overlay')
 	}
