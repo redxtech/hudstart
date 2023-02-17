@@ -94,6 +94,7 @@
 					</a-typography-title>
 					<a-form-item>
 						<a-radio-group v-model:value="bestOf">
+							<a-radio-button :value="0">auto</a-radio-button>
 							<a-radio-button :value="1">best of 1</a-radio-button>
 							<a-radio-button :value="3">best of 3</a-radio-button>
 							<a-radio-button :value="5">best of 5</a-radio-button>
@@ -160,7 +161,7 @@ export default {
 			moreSets: true,
 			moreSetsInterval: undefined,
 			showCompleted: true,
-			bestOf: 3,
+			bestOf: 0,
 			overlay: 'default',
 			overlayModalVisible: false,
 			commentatorModalVisible: false,

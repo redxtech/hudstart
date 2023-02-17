@@ -27,7 +27,7 @@ export default {
 			setID: '',
 			refreshInterval: 5,
 			set: {},
-			bestOf: 3,
+			bestOfManual: 0,
 			videogame: {},
 		}
 	},
@@ -84,7 +84,13 @@ export default {
 			return this.createPlayer(this.set, 1)
 		},
 		match () { return this.set.fullRoundText || 'unknown round' },
-		// bestOf () { return this.set.setGamesType === 1 ? this.set.totalGames : 0 },
+		bestOf () {
+			return this.bestOfManual === 0
+				? this.set.setGamesType === 1
+					? this.set.totalGames
+					: 3
+				: this.bestOfManual
+		},
 		event () { return this.set?.event?.name || 'unknown event' },
 		grands () { return this.set.fullRoundText === 'Grand Final' },
 		// TODO fix best of, doesn't work
@@ -110,7 +116,7 @@ export default {
 						this.overlay = data.value
 						break
 					case 'BESTOF':
-						this.bestOf = data.value
+						this.bestOfManual = data.value
 						break
 					case 'CLEAR':
 						this.setSet('')
