@@ -1,15 +1,11 @@
-// calls start.gg api for live data on a current match for use in a HUD for a stream element
 import 'std/dotenv/load.ts'
-// import { open } from 'open/index.ts'
+import { open } from 'open/index.ts'
 
 import { handleSocketReq } from './sockets.ts'
 import { handleStatic } from './static.ts';
 
 // main function
 const main = async () => {
-	// open browser windows
-	// open('http://localhost:5123')
-
 	// keep track of sockets
 	const sockets = new Map<string, WebSocket>()
 
@@ -28,6 +24,12 @@ const main = async () => {
 	}
 
 	const server = Deno.listen({ port: 8080 });
+
+	// open browser windows
+	if (Deno.env.get('PRODUCTION') === 'TRUE') {
+		open('http://localhost:8080/admin.html')
+		open('http://localhost:8080')
+	}
 
 	for await (const conn of server) {
 		handle(conn);
