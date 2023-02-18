@@ -13,7 +13,6 @@ const main = async () => {
 		const httpConn = Deno.serveHttp(conn);
 		for await (const requestEvent of httpConn) {
 			const url = new URL(requestEvent.request.url);
-			console.log(`path: ${url.pathname}`);
 
 			if (url.pathname === '/ws') {
 				await requestEvent.respondWith(handleSocketReq(sockets, requestEvent.request))
@@ -23,14 +22,14 @@ const main = async () => {
 		}
 	}
 
-	const port = 8080
+	const port = parseInt(Deno.env.get('HUDSTART_PORT') || '8080')
 
 	const server = Deno.listen({ port });
 
 	console.log('listening on port', port)
 
 	// open browser windows
-	if (Deno.env.get('PRODUCTION') === 'TRUE') {
+	if (Deno.env.get('HUDSTART_PROD') === 'TRUE') {
 		open(`http://localhost:${port}`)
 		open(`http://localhost:${port}/admin.html`)
 	}
