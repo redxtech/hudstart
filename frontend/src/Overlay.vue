@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { markRaw } from 'vue'
 import { overlays } from './components/overlays/overlays.js'
 import { InProgressSet, CharacterList } from './queries.js'
 
@@ -95,7 +94,7 @@ export default {
 		grands () { return this.set.fullRoundText === 'Grand Final' },
 		// TODO fix best of, doesn't work
 		overlayComponent () {
-			return markRaw(overlays[this.overlay])
+			return overlays[this.overlay]
 		}
 	},
 	mounted () {
