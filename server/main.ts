@@ -23,12 +23,16 @@ const main = async () => {
 		}
 	}
 
-	const server = Deno.listen({ port: 8080 });
+	const port = 8080
+
+	const server = Deno.listen({ port });
+
+	console.log('listening on port', port)
 
 	// open browser windows
 	if (Deno.env.get('PRODUCTION') === 'TRUE') {
-		open('http://localhost:8080/admin.html')
-		open('http://localhost:8080')
+		open(`http://localhost:${port}`)
+		open(`http://localhost:${port}/admin.html`)
 	}
 
 	for await (const conn of server) {
