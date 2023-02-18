@@ -107,6 +107,7 @@
 						<a-space>
 							<a-button type="default" @click="showOverlayModal">choose overlay</a-button>
 							<a-button type="default" @click="showCommentatorModal">show commentator modal</a-button>
+							<a-button type="default">show top 8 generator</a-button>
 							<a-button type="default" @click="showTokenModal">set api token</a-button>
 						</a-space>
 						<a-modal v-model:visible="overlayModalVisible" title="choose overlay" @ok="setOverlay">
