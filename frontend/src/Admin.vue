@@ -237,8 +237,8 @@ export default {
 			if (this.useStreamQueue) {
 				if (this.stream) {
 					return this.streamQueue
-						.find(s => s.stream.streamName === this.stream)
-						.sets
+						?.find(s => s.stream.streamName === this.stream)
+						?.sets
 						.map(s => {
 							return {
 								label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
@@ -361,20 +361,13 @@ export default {
 	watch: {
 		tournamentSlug () {
 			this.event = undefined
+			this.stream = undefined
 			this.set = undefined
 			this.$apollo.queries.events.skip = !this.tournamentSlug
 			this.$apollo.queries.streamQueue.skip = !this.tournamentSlug
-
-			this.stream = this.streamQueue || this.streamQueue?.[0]?.stream?.streamName
-			this.event = this.event || this.events?.[0]?.slug
 		},
 		useStreamQueue () {
 			this.set = undefined
-			if (this.useStreamQueue) {
-				this.stream = this.stream || this.streamQueue?.[0]?.stream?.streamName
-			} else {
-				this.event = this.event || this.events?.[0]?.slug
-			}
 		},
 		event () {
 			this.set = undefined
