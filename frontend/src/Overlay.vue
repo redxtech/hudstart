@@ -102,7 +102,14 @@ export default {
 	mounted () {
 		this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
 
-		const onOpen = () => console.log('websocket connected')
+		const onOpen = () => {
+			console.log('websocket connected')
+
+			this.conn.send(JSON.stringify({
+				target: 'ADMIN',
+				type: 'INITIAL'
+			}))
+		}
 
 		const onMessage = event => {
 			const data = JSON.parse(event.data)
@@ -119,6 +126,11 @@ export default {
 						break
 					case 'BESTOF':
 						this.bestOfManual = data.value
+						break
+					case 'STATE':
+						this.setSet(data.value.set)
+						this.overlay = data.value.overlay
+						this.bestOfManual = data.value.bestOf
 						break
 					case 'CLEAR':
 						this.setSet('')

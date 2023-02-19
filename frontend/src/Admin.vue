@@ -362,13 +362,11 @@ export default {
 		tournamentSlug () {
 			this.event = undefined
 			this.set = undefined
-			this.$apollo.queries.events.skip = !this.tournament
-			this.$apollo.queries.streamQueue.skip = !this.tournament
-			if (this.useStreamQueue) {
-				this.stream = this.stream || this.streamQueue?.[0]?.stream?.streamName
-			} else {
-				this.event = this.event || this.events?.[0]?.slug
-			}
+			this.$apollo.queries.events.skip = !this.tournamentSlug
+			this.$apollo.queries.streamQueue.skip = !this.tournamentSlug
+
+			this.stream = this.streamQueue || this.streamQueue?.[0]?.stream?.streamName
+			this.event = this.event || this.events?.[0]?.slug
 		},
 		useStreamQueue () {
 			this.set = undefined
@@ -403,6 +401,23 @@ export default {
 		const onMessage = event => {
 			const data = JSON.parse(event.data)
 			if (data.target === 'ADMIN') {
+				switch (data.type) {
+					case 'INITIAL':
+						if (this.conn) {
+							this.conn.send(JSON.stringify({
+								target: 'OVERLAY',
+								type: 'STATE',
+								value: {
+									set: this.set,
+									overlay: this.overlay,
+									bestOf: this.bestOf
+								}
+							}))
+						}
+						break
+					default:
+						break
+				}
 				console.log(data)
 			}
 		}
