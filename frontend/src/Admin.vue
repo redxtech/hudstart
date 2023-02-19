@@ -21,6 +21,9 @@
 					<a-form-item v-if="!tournamentValid && tournament">
 						<a-alert message="invalid tournament url" type="error" show-icon />
 					</a-form-item>
+					<a-form-item v-if="tournamentNotFound && tournamentValid">
+						<a-alert message="tournament not found or has no events" type="error" show-icon />
+					</a-form-item>
 					<a-typography-title :level="4">
 						set selection mode
 					</a-typography-title>
@@ -217,6 +220,11 @@ export default {
 		// if tournament url is valid
 		tournamentValid () {
 			return urlMatch.test(this.tournament)
+		},
+		// determine if a tournament is found with that slug
+		tournamentNotFound () {
+			// only return true if events is empty and events query not loading
+			return !this.events && !this.$apolloData.queries.events.loading
 		},
 		// formatted list of events for the select element
 		eventSelection () {
