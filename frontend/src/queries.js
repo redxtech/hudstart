@@ -101,6 +101,17 @@ query InProgressSet($set: ID!) {
           id
           gamerTag
           prefix
+					player {
+            id
+            user {
+              id
+              authorizations(types: [TWITTER]) {
+                id
+                externalUsername
+                type
+              }
+            }
+          }
         }
       }
       standing {
