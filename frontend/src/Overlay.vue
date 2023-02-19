@@ -115,6 +115,7 @@ export default {
 						break
 					case 'OVERLAY':
 						this.overlay = data.value
+						localStorage.setItem('overlay', data.value)
 						break
 					case 'BESTOF':
 						this.bestOfManual = data.value
@@ -146,7 +147,11 @@ export default {
 		this.conn.addEventListener('message', onMessage)
 		this.conn.addEventListener('close', onClose)
 
-		this.overlay = localStorage.getItem('overlay')
+		const overlay = localStorage.getItem('overlay')
+		this.overlay = overlay
+			? overlay
+			: 'default'
+		
 	},
 	unmounted () {
 		this.conn.removeEventListener('close')
