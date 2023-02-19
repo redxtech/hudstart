@@ -37,7 +37,7 @@ export default {
           set: this.setID
 				}
 			},
-			// pollInterval: 5 * 1000
+			// pollInterval: 2 * 1000
 		},
 		videogame: {
 			query: CharacterList,
@@ -196,6 +196,6 @@ export default {
 #overlay {
 	height: 1080px;
 	width: 1920px;
-	border: 5px red solid;
+	/* border: 5px red solid; */
 }
 </style>
