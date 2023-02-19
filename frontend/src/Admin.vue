@@ -370,7 +370,7 @@ export default {
 				this.event = urlParts[2]
 					? urlParts[1] + urlParts[2]
 					: undefined
-				this.set = parseInt(urlParts[3])
+				this.set = parseInt(urlParts[3]) || undefined
 			}
 
 			this.$apollo.queries.events.skip = !this.tournamentSlug
