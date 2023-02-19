@@ -127,7 +127,7 @@
 							</a-form-item>
 						</a-modal>
 						<a-modal v-model:visible="commentatorModalVisible" title="commentator information" @ok="hideCommentatorModal">
-							<commentator-page :set="sets.find(s => s.id === this.set)" />
+							<commentator-page :setID="set || 0" />
 						</a-modal>
 						<a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
 							<a-form-item>

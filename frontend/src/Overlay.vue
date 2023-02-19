@@ -53,9 +53,11 @@ export default {
 		createPlayer (set, pIndex) {
 			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || `player ${pIndex ? 'two' : 'one'} name`
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
+			const fullTag = tag
+				? `[${tag}] ${name}`
+				: name
 			const score = set?.slots?.[pIndex]?.standing.stats.score.value || 0
 			const twitter = set?.slots?.[pIndex]?.entrant.participants[0]?.player?.user?.authorizations?.[0]?.externalUsername
-			const winners = true
 
 			const charID = set?.games?.at(-1).selections
 				.filter(s => s.selectionType === 'CHARACTER')
@@ -66,13 +68,13 @@ export default {
 			return {
 				name,
 				tag,
+				fullTag,
 				score,
 				twitter,
 				char: char ? {
 					name: char?.name,
 					img: char?.images[1].url
 				} : undefined,
-				winners
 			}
 		}
 	},
