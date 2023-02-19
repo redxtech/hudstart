@@ -18,6 +18,9 @@
 							placeholder="https://start.gg/tournament/..."
 						/>
 					</a-form-item>
+					<a-form-item v-if="!tournamentValid && tournament">
+						<a-alert message="invalid tournament url" type="error" show-icon />
+					</a-form-item>
 					<a-typography-title :level="4">
 						set selection mode
 					</a-typography-title>
@@ -142,12 +145,15 @@ import CommentatorPage from './components/commentator.vue'
 import { EventsInTourney, SetsInEvent, StreamQueue } from './queries.js'
 import { overlays } from './components/overlays/overlays.js'
 
+const urlMatch = /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/
+
 export default {
 	name: 'Admin',
 	data () {
 		return {
 			conn: undefined,
 			tournament: undefined,
+			tournamentSlug: undefined,
 			token: '',
 			useStreamQueue: false,
 			streamQueue: [],
@@ -207,12 +213,8 @@ export default {
 		}
 	},
 	computed: {
-		tournamentSlug () {
-			if (this.tournament) {
-				return this.tournament.replace(/https:\/\/(www\.)?start.gg\/tournament/, 'tournament')
-			} else {
-				return 'tournament'
-			}
+		tournamentValid () {
+			return urlMatch.test(this.tournament)
 		},
 		eventSelection () {
 			if (this.events) {
@@ -359,10 +361,18 @@ export default {
 		}
 	},
 	watch: {
-		tournamentSlug () {
-			this.event = undefined
+		tournament () {
 			this.stream = undefined
-			this.set = undefined
+			
+			const urlParts = urlMatch.exec(this.tournament)
+			if (urlParts) {
+				this.tournamentSlug = urlParts[1]
+				this.event = urlParts[2]
+					? urlParts[1] + urlParts[2]
+					: undefined
+				this.set = parseInt(urlParts[3])
+			}
+
 			this.$apollo.queries.events.skip = !this.tournamentSlug
 			this.$apollo.queries.streamQueue.skip = !this.tournamentSlug
 		},
@@ -370,7 +380,10 @@ export default {
 			this.set = undefined
 		},
 		event () {
-			this.set = undefined
+			const urlParts = urlMatch.exec(this.tournament)
+			if (!urlParts[2]) {
+				this.set = undefined
+			}
 			this.moreSets = true
 			this.setPage = 1
 			this.updatePage = 1
