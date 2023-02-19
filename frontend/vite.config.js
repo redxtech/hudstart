@@ -7,7 +7,7 @@ import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
 	define: {
-		__VUE_PROD_DEVTOOLS__: true
+		__VUE_PROD_DEVTOOLS__: true // enable devtools in production build
 	},
 	build: {
     rollupOptions: {

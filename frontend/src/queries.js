@@ -1,3 +1,5 @@
+// define queries for use in the app
+
 import gql from 'graphql-tag'
 
 export const EventsInTourney = gql`
@@ -15,7 +17,7 @@ query EventsInTourney($tourney: String!) {
 `
 
 export const StreamQueue = gql`
-query StreamQueueOnTournament($tourney: String!) {
+query StreamQueue($tourney: String!) {
   tournament(slug: $tourney) {
     id
     streamQueue {
@@ -45,7 +47,7 @@ query StreamQueueOnTournament($tourney: String!) {
 `
 
 export const SetsInEvent = gql`
-query EventSets($event: String!, $page: Int!, $perPage: Int!) {
+query SetsInEvent($event: String!, $page: Int!, $perPage: Int!) {
   event(slug: $event) {
     id
     sets (

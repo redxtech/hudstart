@@ -6,14 +6,19 @@ import { handleStatic } from './static.ts';
 
 // main function
 const main = async () => {
-	// keep track of sockets
+	// keep track of all open sockets
 	const sockets = new Map<string, WebSocket>()
 
+	// handle all connections to the webserver
 	async function handle(conn: Deno.Conn) {
 		const httpConn = Deno.serveHttp(conn);
+
 		for await (const requestEvent of httpConn) {
+			// parse the url to determine what will handle the request
 			const url = new URL(requestEvent.request.url);
 
+			// if requesting /ws, hand off to the websocket handler
+			// otherwise, use the static file server
 			if (url.pathname === '/ws') {
 				await requestEvent.respondWith(handleSocketReq(sockets, requestEvent.request))
 			} else {
@@ -22,18 +27,21 @@ const main = async () => {
 		}
 	}
 
+	// TODO choose a different port
+	// get the port from env variables, default to 8080
 	const port = parseInt(Deno.env.get('HUDSTART_PORT') || '8080')
 
+	// start up the server and log it
 	const server = Deno.listen({ port });
-
 	console.log('listening on port', port)
 
-	// open browser windows
+	// open browser windows if running prod
 	if (Deno.env.get('HUDSTART_PROD') === 'TRUE') {
 		open(`http://localhost:${port}`)
 		open(`http://localhost:${port}/admin.html`)
 	}
 
+	// handle each connection of the server
 	for await (const conn of server) {
 		handle(conn);
 	}

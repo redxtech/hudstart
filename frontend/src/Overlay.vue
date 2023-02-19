@@ -17,7 +17,6 @@
 import { overlays } from './components/overlays/overlays.js'
 import { InProgressSet, CharacterList } from './queries.js'
 
-
 export default {
 	data() {
 		return {
@@ -50,6 +49,7 @@ export default {
 		}
 	},
 	methods: {
+		// return a player object of selected player from the current set
 		createPlayer (set, pIndex) {
 			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || `player ${pIndex ? 'two' : 'one'} name`
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
@@ -74,8 +74,7 @@ export default {
 				} : undefined,
 				winners
 			}
-		},
-		setSet (setID) { this.setID = setID }
+		}
 	},
 	computed: {
 		p1 () {
@@ -86,6 +85,7 @@ export default {
 		},
 		match () { return this.set.fullRoundText || 'unknown round' },
 		bestOf () {
+			// if bestOfManual is 0, that means use API for bestOf
 			return this.bestOfManual === 0
 				? this.set.setGamesType === 1
 					? this.set.totalGames
@@ -94,14 +94,15 @@ export default {
 		},
 		event () { return this.set?.event?.name || 'unknown event' },
 		grands () { return this.set.fullRoundText === 'Grand Final' },
-		// TODO fix best of, doesn't work
 		overlayComponent () {
 			return overlays[this.overlay]
 		}
 	},
 	mounted () {
+		// create websocket connection on mount
 		this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
 
+		// send notice to admin page that the websocket has connected
 		const onOpen = () => {
 			console.log('websocket connected')
 
@@ -111,39 +112,54 @@ export default {
 			}))
 		}
 
+		// handle messages based on the content
 		const onMessage = event => {
-			const data = JSON.parse(event.data)
-			if (data.target === 'OVERLAY') {
-				switch (data.type) {
-					case 'SET':
-						if (data.value.length === 8 && parseInt(data.value)) {
-							this.setSet(data.value.toString())
-						}
-						break
-					case 'OVERLAY':
-						this.overlay = data.value
-						localStorage.setItem('overlay', data.value)
-						break
-					case 'BESTOF':
-						this.bestOfManual = data.value
-						break
-					case 'STATE':
-						this.setSet(data.value.set)
-						this.overlay = data.value.overlay
-						this.bestOfManual = data.value.bestOf
-						break
-					case 'CLEAR':
-						this.setSet('')
-						break
-					case 'TOKEN':
-						window.location.reload()
-						break
-					default:
-						break
+			try {
+				const data = JSON.parse(event.data)
+				// only handle messages targeted at the overlay
+				if (data.target === 'OVERLAY') {
+					switch (data.type) {
+						// update set when sent from admin page
+						case 'SET':
+							if (data.value.length === 8 && parseInt(data.value)) {
+								this.setID = data.value.toString()
+							}
+							break
+						// update the overlay when sent from admin page
+						case 'OVERLAY':
+							this.overlay = data.value
+							localStorage.setItem('overlay', data.value)
+							break
+						// update the bestOf when sent from admin page
+						case 'BESTOF':
+							this.bestOfManual = data.value
+							break
+						// update the whole state of the overlay data when sent from admin page
+						case 'STATE':
+							this.setID = data.value.set
+							this.overlay = data.value.overlay
+							this.bestOfManual = data.value.bestOf
+							break
+						// clear the set when signalled from the admin page
+						case 'CLEAR':
+							this.setID = undefined
+							break
+						// set the token in localstorage and reload the page when sent new token from admin page
+						case 'TOKEN':
+							localStorage.setItem('api-token', data.value)
+							window.location.reload()
+							break
+						default:
+							break
+					}
 				}
+			} catch (e) {
+				console.error('couldn\'t parse websocket message:', e)
 			}
 		}
 
+		// when the socket closes, log it and set a timeout to try and reconnect
+		// this will run every time a connection fails as well, so it will keep trying until connected
 		const onClose = () => {
 	    this.conn = null
 			console.log('websocket closed')
@@ -155,10 +171,12 @@ export default {
 			}, 3000)
 		}
 
+		// add all event listeners to the socket
 		this.conn.addEventListener('open', onOpen)
 		this.conn.addEventListener('message', onMessage)
 		this.conn.addEventListener('close', onClose)
 
+		// on page load, get the overlay from localStorage and use it
 		const overlay = localStorage.getItem('overlay')
 		this.overlay = overlay
 			? overlay
@@ -166,6 +184,7 @@ export default {
 		
 	},
 	unmounted () {
+		// close websocket
 		this.conn.removeEventListener('close')
 		this.conn.close()
 		this.conn = null

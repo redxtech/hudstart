@@ -145,6 +145,7 @@ import CommentatorPage from './components/commentator.vue'
 import { EventsInTourney, SetsInEvent, StreamQueue } from './queries.js'
 import { overlays } from './components/overlays/overlays.js'
 
+// regex to match and extract data points from the url
 const urlMatch = /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/
 
 export default {
@@ -213,9 +214,11 @@ export default {
 		}
 	},
 	computed: {
+		// if tournament url is valid
 		tournamentValid () {
 			return urlMatch.test(this.tournament)
 		},
+		// formatted list of events for the select element
 		eventSelection () {
 			if (this.events) {
 				return this.events.map(e => {
@@ -228,6 +231,7 @@ export default {
 				return []
 			}
 		},
+		// formatted list of streams for the select element
 		streamSelection () {
 			if (this.streamQueue) {
 				return this.streamQueue.map(s => s.stream?.streamName)
@@ -235,21 +239,28 @@ export default {
 				return []
 			}
 		},
+		// formatted list of sets for the select element
 		setSelection () {
+			// if trying to use streamqueue
+			// return sets from the selected stream, if it exists
 			if (this.useStreamQueue) {
 				if (this.stream) {
 					return this.streamQueue
 						?.find(s => s.stream.streamName === this.stream)
 						?.sets
 						.map(s => {
+							// format the label to give set information
 							return {
 								label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
 								value: s.id
 							}
 						})
+				} else {
+					return []
 				}
 			} else {
 				if (this.sets) {
+					// filter sets if showCompleted is set, otherwise just format and return all sets in event
 					return this.sets
 						.filter(set => set.slots.every(slot => slot.entrant !== null) && (this.showCompleted ? true : set.state !== 3))
 						.map(s => {
@@ -263,6 +274,7 @@ export default {
 				}
 			}
 		},
+		// formatted list of overlays for the select element
 		overlaySelection () {
 			return Object.keys(overlays).map(overlay => {
 				return {
@@ -273,6 +285,7 @@ export default {
 		}
 	},
 	methods: {
+		// send new set ID to the overlay via websocket
 		updateSet() {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
@@ -282,6 +295,7 @@ export default {
 				}))
 			}
 		},
+		// send clear signal to the overlay via websocket
 		clearSet() {
 			this.set = undefined
 			if (this.conn) {
@@ -291,7 +305,9 @@ export default {
 				}))
 			}
 		},
+		// fetch the next page of sets from the graphql api
 		getMoreSets() {
+			// only if the event is valid and more sets exist
 			if (this.event && this.moreSets) {
 				this.updatePage++
 				this.$apollo.queries.sets.fetchMore({
@@ -350,7 +366,8 @@ export default {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
 					target: 'OVERLAY',
-					type: 'TOKEN'
+					type: 'TOKEN',
+					value: this.token
 				}))
 			}
 
@@ -361,34 +378,53 @@ export default {
 		}
 	},
 	watch: {
+		// when the tournament url is changed, tell the rest of the page what needs to be updated
 		tournament () {
+			// unest selected stream
 			this.stream = undefined
 			
+			// split the url into parts to be used
 			const urlParts = urlMatch.exec(this.tournament)
+
+			// if urlParts is valid, it's safe to assume that at least the tournament slug is present
 			if (urlParts) {
+				// set tournament slug
 				this.tournamentSlug = urlParts[1]
+				// set event slug if present in url
 				this.event = urlParts[2]
 					? urlParts[1] + urlParts[2]
 					: undefined
+				// set set if present in url
 				this.set = parseInt(urlParts[3]) || undefined
 			}
-
+			
+			// if the tournamentSlug is invalid, don't query the API
 			this.$apollo.queries.events.skip = !this.tournamentSlug
 			this.$apollo.queries.streamQueue.skip = !this.tournamentSlug
 		},
+		// unset current set when using stream queue status changes
 		useStreamQueue () {
 			this.set = undefined
 		},
+		// when event changes, see if set can be pulled from the url
 		event () {
+			// split url into parts again
 			const urlParts = urlMatch.exec(this.tournament)
+
+			// if there is no event specified by the url, unset the set
 			if (!urlParts[2]) {
 				this.set = undefined
 			}
+
+			// on event changes, reset variables to query the next pages of set data
 			this.moreSets = true
 			this.setPage = 1
 			this.updatePage = 1
+
+			// only query sets from api if event is valid
 			this.$apollo.queries.sets.skip = !this.event
 		},
+		// sent current bestOf to the overlay
 		bestOf () {
 			if (this.conn) {
 				this.conn.send(JSON.stringify({
@@ -400,34 +436,44 @@ export default {
 		}
 	},
 	mounted () {
+		// create new websocket on mount
 		this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL)
 
 		const onOpen = () => console.log('websocket connected')
 
+		// handle websocket messages based on their content
 		const onMessage = event => {
-			const data = JSON.parse(event.data)
-			if (data.target === 'ADMIN') {
-				switch (data.type) {
-					case 'INITIAL':
-						if (this.conn) {
-							this.conn.send(JSON.stringify({
-								target: 'OVERLAY',
-								type: 'STATE',
-								value: {
-									set: this.set,
-									overlay: this.overlay,
-									bestOf: this.bestOf
-								}
-							}))
-						}
-						break
-					default:
-						break
+			try {
+				const data = JSON.parse(event.data)
+
+				// only handle messages targeting the admin page
+				if (data.target === 'ADMIN') {
+					switch (data.type) {
+						// when prompted by initial connection, set the full current state to the overlay
+						case 'INITIAL':
+							if (this.conn) {
+								this.conn.send(JSON.stringify({
+									target: 'OVERLAY',
+									type: 'STATE',
+									value: {
+										set: this.set,
+										overlay: this.overlay,
+										bestOf: this.bestOf
+									}
+								}))
+							}
+							break
+						default:
+							break
+					}
 				}
-				console.log(data)
+			} catch (e) {
+				console.error('couldn\'t parse websocket message:', e)
 			}
 		}
 
+		// when the socket closes, log it and set a timeout to try and reconnect
+		// this will run every time a connection fails as well, so it will keep trying until connected
 		const onClose = () => {
 			this.conn = null
 			console.log('websocket closed')
@@ -439,21 +485,29 @@ export default {
 			}, 3000)
 		}
 
+		// add all event listeners to the socket
 		this.conn.addEventListener('open', onOpen)
 		this.conn.addEventListener('message', onMessage)
 		this.conn.addEventListener('close', onClose)
 
+		// create an interval to keep getting more sets from the paginated sets query
 		this.moreSetsInterval = setInterval(() => {
+			// getMoreSets has a check to not run if sets are up to date
 			this.getMoreSets()
 		}, 1 * 1000)
-
-		this.token = localStorage.getItem('api-token')
-		this.overlay = localStorage.getItem('overlay')
+		
+		// pull api token and current overylay from local storage
+		this.token = localStorage.getItem('api-token') || undefined
+		this.overlay = localStorage.getItem('overlay') || undefined
 	},
 	unmounted () {
+		// close websocket
 		this.conn.removeEventListener('close')
 		this.conn.close()
 		this.conn = null
+
+		// cancel getMoreSets interval
+		clearInterval(this.moreSetsInterval)
 	},
 	components: {
 		CommentatorPage
