@@ -84,6 +84,9 @@
           <a-form-item class="filter-switch" label="show completed">
             <a-switch v-model:checked="showCompleted" />
           </a-form-item>
+          <a-form-item class="filter-switch" label="swap players">
+            <a-switch v-model:checked="flipPlayers" />
+          </a-form-item>
           <a-form-item>
             <a-space>
               <a-button type="primary" @click="updateSet">save</a-button>
@@ -180,6 +183,7 @@ export default {
       moreSets: true,
       moreSetsInterval: undefined,
       showCompleted: true,
+      flipPlayers: true,
       bestOf: 0,
       overlay: "default",
       overlayModalVisible: false,
@@ -469,6 +473,18 @@ export default {
         );
       }
     },
+    // sent current flip status to the overlay
+    flipPlayers() {
+      if (this.conn) {
+        this.conn.send(
+          JSON.stringify({
+            target: "OVERLAY",
+            type: "FLIP",
+            value: this.flipPlayers,
+          })
+        );
+      }
+    },
   },
   mounted() {
     // create new websocket on mount
@@ -495,6 +511,7 @@ export default {
                       set: this.set,
                       overlay: this.overlay,
                       bestOf: this.bestOf,
+                      flipPlayers: this.flipPlayers,
                     },
                   })
                 );

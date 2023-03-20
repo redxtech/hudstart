@@ -3,8 +3,8 @@
     <component
       :is="overlayComponent"
       :key="overlay"
-      :p1="p1"
-      :p2="p2"
+      :p1="l"
+      :p2="r"
       :match="match"
       :best-of="bestOf"
       :event="event"
@@ -23,6 +23,7 @@ export default {
       conn: undefined,
       overlay: "default",
       setID: "",
+      flipPlayers: false,
       refreshInterval: 5,
       set: {},
       bestOfManual: 0,
@@ -98,6 +99,12 @@ export default {
     p2() {
       return this.createPlayer(this.set, 1);
     },
+    l() {
+      return this.flipPlayers ? this.p2 : this.p1;
+    },
+    r() {
+      return this.flipPlayers ? this.p1 : this.p2;
+    },
     match() {
       return this.set.fullRoundText || "unknown round";
     },
@@ -157,11 +164,16 @@ export default {
             case "BESTOF":
               this.bestOfManual = data.value;
               break;
+            // update flipPlayers when sent from admin page
+            case "FLIP":
+              this.flipPlayers = data.value;
+              break;
             // update the whole state of the overlay data when sent from admin page
             case "STATE":
               this.setID = data.value.set;
               this.overlay = data.value.overlay;
               this.bestOfManual = data.value.bestOf;
+              this.flipPlayers = data.value.flipPlayers;
               break;
             // clear the set when signalled from the admin page
             case "CLEAR":
