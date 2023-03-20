@@ -159,6 +159,7 @@ import { EventsInTourney, SetsInEvent, StreamQueue } from "./queries.js";
 import { overlays } from "./components/overlays/overlays.js";
 
 // TODO: add top 8 generator (calculate player characters from char with most game wins this tournament)
+// TODO: add preview of overlay to bottom of admin page
 
 // regex to match and extract data points from the url
 const urlMatch =

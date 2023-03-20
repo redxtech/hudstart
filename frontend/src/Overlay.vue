@@ -7,6 +7,7 @@
       :p2="r"
       :match="match"
       :best-of="bestOf"
+      :flipPlayers="flipPlayers"
       :event="event"
       :grands="grands"
     />
@@ -73,6 +74,7 @@ export default {
           (s) => s.entrant.id === set.slots[pIndex]?.entrant.id
         )?.selectionValue;
       const char = this.videogame?.characters?.find((c) => c.id === charID);
+      // TODO: create an object to lookup the needsFlip if on left & necessary zoom
 
       return {
         id,

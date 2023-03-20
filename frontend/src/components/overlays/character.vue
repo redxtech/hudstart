@@ -1,7 +1,14 @@
 <template>
-  <div id="skaarfs-overlay">
-    <div class="match">
+  <div id="character-overlay">
+    <div class="match info">
       <p>{{ match }}</p>
+    </div>
+    <div class="best-of info">
+      <p>Best of {{ bestOf }}</p>
+    </div>
+    <div class="separator">
+      <!-- <img src="../../assets/smash_ball.svg" alt="smash ball" /> -->
+      <p><span class="v">V</span><span class="s">S</span></p>
     </div>
     <div class="name name-l">
       <p>
@@ -12,25 +19,33 @@
     <div class="score score-l">
       <p>{{ p1.score }}</p>
     </div>
-    <div class="separator">
-      <!-- <img src="../../assets/smash_ball.svg" alt="smash ball" /> -->
-      <p>VS</p>
-    </div>
-    <div class="best-of">
-      <p>Best of {{ bestOf }}</p>
-    </div>
     <div class="score score-r">
       <p>{{ p2.score }}</p>
     </div>
     <div class="name name-r">
       <p>
         <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }} </span>
-        <span v-if="p2.tag" class="tag">[{{ p2.tag }}] </span>{{ p2.name }}
+        <span v-if="p2.tag" class="tag"> [{{ p2.tag }}] </span>{{ p2.name }}
+        <!-- {{ p2.name }}<span v-if="p2.tag" class="tag"> [{{ p2.tag }}]</span> -->
         <span v-if="grands" class="winners"> [L]</span>
       </p>
     </div>
     <div class="border-l"></div>
     <div class="border-r"></div>
+    <div
+      v-if="p1.char?.full"
+      class="char char-l"
+      :class="{ flip: flipPlayers }"
+    >
+      <img :src="p1.char.full" :alt="p1.char.name" />
+    </div>
+    <div
+      v-if="p2.char?.full"
+      class="char char-r"
+      :class="{ flip: flipPlayers }"
+    >
+      <img :src="p2.char.full" :alt="p2.char.name" />
+    </div>
   </div>
 </template>
 
@@ -38,7 +53,7 @@
 import props from "./props.js";
 
 export default {
-  name: "Skaarf's Overlay",
+  name: "Character Overlay",
   props,
 };
 </script>
@@ -46,7 +61,7 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=League+Gothic&display=swap");
 
-#skaarfs-overlay {
+#character-overlay {
   display: grid;
   grid-template-columns: 1fr 15px 50px 50px 15px 1fr;
   grid-template-rows: 60px 60px 5px;
@@ -60,7 +75,7 @@ export default {
   --p1-colour: #e1341e;
   --p2-colour: #1ecbe1;
 
-  background-color: black;
+  background-color: #1b1b1b;
   color: white;
 
   margin: 30px auto;
@@ -68,27 +83,21 @@ export default {
 
   font-family: "League Gothic", sans-serif;
   font-weight: 700;
+  --big-text: 40px;
   --small-text: 30px;
 }
 
-#skaarfs-overlay p {
+#character-overlay p {
   margin-top: 0;
   margin-bottom: 0;
+  z-index: 10;
+  position: relative;
 }
 
 .name p {
-  font-size: 40px;
   margin: 0 0.5rem;
-}
-
-.tag {
-  color: gray;
-}
-
-.pronouns {
-  font-size: 25px;
-  color: gray;
-  text-transform: lowercase;
+  font-size: var(--big-text);
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.75);
 }
 
 .name-l {
@@ -101,13 +110,24 @@ export default {
   text-align: right;
 }
 
+.tag {
+  color: gray;
+  font-size: calc(var(--big-text) - 5px);
+}
+
+.pronouns {
+  font-size: calc(var(--big-text) - 15px);
+  color: gray;
+  text-transform: lowercase;
+}
+
 .score {
   display: flex;
   align-items: flex-end;
 }
 
 .score p {
-  font-size: var(--small-text);
+  font-size: var(--big-text);
 }
 
 .score-l {
@@ -120,18 +140,19 @@ export default {
   justify-content: flex-start;
 }
 
+.info {
+  font-size: var(--small-text);
+  text-transform: uppercase;
+}
+
 .match {
   grid-area: match;
-  font-size: var(--small-text);
   text-align: right;
-  text-transform: uppercase;
 }
 
 .best-of {
   grid-area: best-of;
-  font-size: var(--small-text);
   text-align: left;
-  text-transform: uppercase;
 }
 
 .separator {
@@ -150,6 +171,16 @@ export default {
   font-style: italic;
 }
 
+.separator .v {
+  position: relative;
+  top: -5px;
+}
+
+.separator .s {
+  position: relative;
+  top: 5px;
+}
+
 .border-l {
   grid-area: border-l;
   background-color: var(--p1-colour);
@@ -158,5 +189,28 @@ export default {
 .border-r {
   grid-area: border-r;
   background-color: var(--p2-colour);
+}
+
+.char {
+  /* position: absolute; */
+  position: relative;
+  top: -125px;
+
+  /* width: 400px; */
+  height: 120px;
+
+  grid-column: span 3;
+
+  overflow: hidden;
+}
+
+.char img {
+  z-index: 5;
+  max-width: 100%;
+  filter: grayscale(85%) opacity(75%);
+}
+
+.char.flip img {
+  transform: scaleX(-1);
 }
 </style>
