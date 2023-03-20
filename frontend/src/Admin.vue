@@ -111,7 +111,7 @@
               <a-button type="default" @click="showCommentatorModal"
                 >show commentator modal</a-button
               >
-              <a-button type="default">show top 8 generator</a-button>
+              <!-- <a-button type="default">show top 8 generator</a-button> -->
               <a-button type="default" @click="showTokenModal"
                 >set api token</a-button
               >
@@ -158,6 +158,8 @@ import CommentatorPage from "./components/commentator.vue";
 import { EventsInTourney, SetsInEvent, StreamQueue } from "./queries.js";
 import { overlays } from "./components/overlays/overlays.js";
 
+// TODO: add top 8 generator (calculate player characters from char with most game wins this tournament)
+
 // regex to match and extract data points from the url
 const urlMatch =
   /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/;
@@ -179,7 +181,7 @@ export default {
       sets: [],
       setPage: 1,
       updatePage: 1,
-      perPage: 20,
+      perPage: 50,
       moreSets: true,
       moreSetsInterval: undefined,
       showCompleted: true,

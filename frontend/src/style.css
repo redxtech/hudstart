@@ -10,7 +10,17 @@
   -webkit-text-size-adjust: 100%;
 }
 
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   padding: 0;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* text-shadow: rgba(0,0,0,.01) 0 0 1px; */
 }
