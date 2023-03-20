@@ -230,6 +230,6 @@ export default {
 #overlay {
   height: 1080px;
   width: 1920px;
-  border: 5px red solid;
+  /* border: 5px red solid; */
 }
 </style>
