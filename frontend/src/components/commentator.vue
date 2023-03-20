@@ -5,14 +5,17 @@
 			<div class="player-grid">
 				<div class="p1">
 					<a-typography-title :level="4">{{ p1.fullTag }}</a-typography-title>
+					<!--TODO add character images-->
 				</div>
 				<div class="sepatator">
 					<a-typography-title :level="4">vs.</a-typography-title>
 				</div>
 				<div class="p2">
 					<a-typography-title :level="4">{{ p2.fullTag }}</a-typography-title>
+					<!--TODO add character images-->
 				</div>
 			</div>
+			<a-typography-title :level="3">Matchup History</a-typography-title>
 		</template>
 		<template v-else>
 			<a-typography-title :level="2">set not specified</a-typography-title>
@@ -61,6 +64,7 @@ export default {
 	methods: {
 		// return a player object of selected player from the current set
 		createPlayer (set, pIndex) {
+			const id = set?.slots?.[pIndex]?.entrant.participants[0].player?.id
 			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || `player ${pIndex ? 'two' : 'one'} name`
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
 			const fullTag = tag
@@ -76,6 +80,7 @@ export default {
 			const char = this.videogame?.characters?.find(c => c.id === charID)
 
 			return {
+				id,
 				name,
 				tag,
 				fullTag,

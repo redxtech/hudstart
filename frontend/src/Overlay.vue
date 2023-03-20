@@ -51,6 +51,7 @@ export default {
 	methods: {
 		// return a player object of selected player from the current set
 		createPlayer (set, pIndex) {
+			const id = set?.slots?.[pIndex]?.entrant.participants[0].player?.id
 			const name = set?.slots?.[pIndex]?.entrant.participants[0].gamerTag || `player ${pIndex ? 'two' : 'one'} name`
 			const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || ''
 			const fullTag = tag
@@ -66,6 +67,7 @@ export default {
 			const char = this.videogame?.characters?.find(c => c.id === charID)
 
 			return {
+				id,
 				name,
 				tag,
 				fullTag,

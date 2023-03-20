@@ -1,0 +1,6 @@
+{
+  "lspconfig": {
+    "denols": false,
+    "eslint": false
+  }
+}

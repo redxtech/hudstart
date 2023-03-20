@@ -54,6 +54,7 @@ query SetsInEvent($event: String!, $page: Int!, $perPage: Int!) {
       page: $page
       perPage: $perPage
       sortType: STANDARD
+			filters: { hideEmpty: true }
     ) {
 			pageInfo {
         totalPages
@@ -78,6 +79,12 @@ query SetsInEvent($event: String!, $page: Int!, $perPage: Int!) {
       }
     }
   }
+}
+`
+
+export const SetsBetweenPlayers = gql`
+query SetsBetweenPlayers($p1: ID!, $p2: ID!) {
+	player(id: $p1)
 }
 `
 

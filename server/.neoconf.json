@@ -1,0 +1,6 @@
+{
+  "lspconfig": {
+    "tsserver": false,
+    "eslint": false
+  }
+}
