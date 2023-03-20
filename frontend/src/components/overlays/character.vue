@@ -71,8 +71,8 @@ export default {
   width: 800px;
   height: 120px;
 
-  --p1-colour: #e1341e;
-  --p2-colour: #1ecbe1;
+  --p1-colour: #ff0000;
+  --p2-colour: #0072ff;
 
   background-color: #1b1b1b;
   color: white;

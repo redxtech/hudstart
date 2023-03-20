@@ -6,13 +6,12 @@
     <div class="set">
       <p class="player p1">
         <span v-if="p1.tag" class="tag">{{ p1.tag }}</span
-        >{{ p1.name }}
-        <span class="score score-l" v-text="p1.score" />
+        >{{ p1.name }}<span class="score score-l" v-text="p1.score" />
       </p>
       <p class="player p2">
         <span class="score score-r" v-text="p2.score" />
-        <span v-if="p2.tag" class="tag">{{ p2.tag }} </span>{{ p2.name
-        }}<span v-if="grands" class="winners"> [L]</span>
+        <span v-if="p2.tag" class="tag">{{ p2.tag }}</span
+        >{{ p2.name }}<span v-if="grands" class="winners">[L]</span>
       </p>
     </div>
   </div>
@@ -69,16 +68,18 @@ export default {
 }
 
 .tag {
-  margin: 0 0.5rem;
   font-weight: normal;
+  margin-right: 0.5rem;
 }
 
 .score {
-  margin: 0 0.5rem;
+  display: inline-block;
+  margin: 2px 0.5rem 0;
   padding: 0 0.4rem;
-  height: 100%;
-  width: 30px;
+  height: 28px;
+  width: 16px;
   background-color: white;
+  text-align: center;
   color: black;
 }
 
@@ -88,6 +89,10 @@ export default {
 
 .score-r {
   border-bottom: 5px solid #1ecbe1;
+}
+
+.winners {
+  margin-left: 5px;
 }
 
 p {

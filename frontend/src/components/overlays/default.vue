@@ -2,7 +2,7 @@
   <div id="default-overlay">
     <div class="name name-l">
       <p>
-        <span v-if="p1.tag" class="tag">[{{ p1.tag }}] </span>{{ p1.name }}
+        <span v-if="p1.tag" class="tag">[{{ p1.tag }}]</span>{{ p1.name }}
       </p>
     </div>
     <div class="score score-l">
@@ -16,8 +16,8 @@
     </div>
     <div class="name name-r">
       <p>
-        <span v-if="p2.tag">[{{ p2.tag }}] </span>{{ p2.name
-        }}<span v-if="grands" class="winners"> [L]</span>
+        <span v-if="p2.tag" class="tag">[{{ p2.tag }}]</span>{{ p2.name
+        }}<span v-if="grands" class="winners">[L]</span>
       </p>
     </div>
     <div class="match">
@@ -117,10 +117,12 @@ export default {
 
 .tag {
   font-weight: normal;
+  margin-right: 5px;
 }
 
 .winners {
   font-weight: normal;
+  margin-left: 5px;
 }
 
 .match {
