@@ -26,7 +26,6 @@
       <p>
         <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }} </span>
         <span v-if="p2.tag" class="tag"> [{{ p2.tag }}] </span>{{ p2.name }}
-        <!-- {{ p2.name }}<span v-if="p2.tag" class="tag"> [{{ p2.tag }}]</span> -->
         <span v-if="grands" class="winners"> [L]</span>
       </p>
     </div>
@@ -63,7 +62,7 @@ export default {
 
 #character-overlay {
   display: grid;
-  grid-template-columns: 1fr 15px 50px 50px 15px 1fr;
+  grid-template-columns: 1fr 15px 40px 40px 15px 1fr;
   grid-template-rows: 60px 60px 5px;
   grid-template-areas:
     "match  match   vs vs best-of best-of"

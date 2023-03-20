@@ -289,6 +289,11 @@ export default {
                 set.slots.every((slot) => slot.entrant !== null) &&
                 (this.showCompleted ? true : set.state !== 3)
             )
+            .sort((a, b) =>
+              a.startedAt && b.startedAt
+                ? b.startedAt - a.startedAt
+                : b.createdAt - a.createdAt
+            )
             .map((s) => {
               return {
                 label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,

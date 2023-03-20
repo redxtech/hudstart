@@ -64,6 +64,8 @@ export const SetsInEvent = gql`
           id
           state
           fullRoundText
+          createdAt
+          startedAt
           phaseGroup {
             phase {
               name
@@ -96,6 +98,8 @@ export const InProgressSet = gql`
       fullRoundText
       setGamesType
       totalGames
+      createdAt
+      startedAt
       event {
         name
         videogame {
