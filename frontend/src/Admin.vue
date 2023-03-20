@@ -406,10 +406,10 @@ export default {
       this.tokenModalVisible = true;
     },
     hasEventLoaded(slug) {
-      return this.events.some((s) => s.slug === slug);
+      return !this.event || this.events.some((s) => s.slug === slug);
     },
     hasSetLoaded(id) {
-      return this.sets.some((s) => s.id === id);
+      return !this.set || this.sets.some((s) => s.id === id);
     },
   },
   watch: {
