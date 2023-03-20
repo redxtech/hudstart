@@ -85,6 +85,7 @@ export default {
           ? {
               name: char?.name,
               img: char?.images[1].url,
+              full: char?.images[0].url,
             }
           : undefined,
       };
