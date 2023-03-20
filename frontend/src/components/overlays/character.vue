@@ -12,8 +12,8 @@
     </div>
     <div class="name name-l">
       <p>
-        <span v-if="p1.tag" class="tag">[{{ p1.tag }}] </span>{{ p1.name }}
-        <span v-if="p1.pronouns" class="pronouns"> {{ p1.pronouns }}</span>
+        <span v-if="p1.tag" class="tag">[{{ p1.tag }}]</span>{{ p1.name
+        }}<span v-if="p1.pronouns" class="pronouns">{{ p1.pronouns }}</span>
       </p>
     </div>
     <div class="score score-l">
@@ -24,9 +24,9 @@
     </div>
     <div class="name name-r">
       <p>
-        <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }} </span>
-        <span v-if="p2.tag" class="tag"> [{{ p2.tag }}] </span>{{ p2.name }}
-        <span v-if="grands" class="winners"> [L]</span>
+        <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }}</span
+        ><span v-if="p2.tag" class="tag">[{{ p2.tag }}]</span>{{ p2.name
+        }}<span v-if="grands" class="winners">[L]</span>
       </p>
     </div>
     <div class="border-l"></div>
@@ -91,12 +91,12 @@ export default {
   margin-bottom: 0;
   z-index: 10;
   position: relative;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.75);
 }
 
 .name p {
   margin: 0 0.5rem;
   font-size: var(--big-text);
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.75);
 }
 
 .name-l {
@@ -104,9 +104,29 @@ export default {
   text-align: left;
 }
 
+.name-l .tag {
+  margin-right: 5px;
+}
+
+.name-l .pronouns {
+  margin-left: 5px;
+}
+
 .name-r {
   grid-area: name-r;
   text-align: right;
+}
+
+.name-r .tag {
+  margin-right: 5px;
+}
+
+.name-r .pronouns {
+  margin-right: 5px;
+}
+
+.name-r .winners {
+  margin-left: 5px;
 }
 
 .tag {
@@ -173,11 +193,13 @@ export default {
 .separator .v {
   position: relative;
   top: -5px;
+  right: -2px;
 }
 
 .separator .s {
   position: relative;
   top: 5px;
+  left: -2px;
 }
 
 .border-l {
@@ -206,7 +228,7 @@ export default {
 .char img {
   z-index: 5;
   max-width: 100%;
-  filter: grayscale(85%) opacity(75%);
+  filter: grayscale(75%);
 }
 
 .char.flip img {

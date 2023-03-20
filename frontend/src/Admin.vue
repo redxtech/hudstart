@@ -186,7 +186,7 @@ export default {
       moreSets: true,
       moreSetsInterval: undefined,
       showCompleted: true,
-      flipPlayers: true,
+      flipPlayers: false,
       bestOf: 0,
       overlay: "default",
       overlayModalVisible: false,
