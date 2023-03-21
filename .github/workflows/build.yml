@@ -13,19 +13,14 @@ jobs:
     permissions:
       contents: write
 
-    strategy:
-      matrix:
-        deno-version: [v1.x.x]
-        node-version: [16.x]
-
     steps:
       - name: Git Checkout
         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use node v16.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
           cache: yarn
           cache-dependency-path: ./frontend/yarn.lock
 
@@ -37,15 +32,15 @@ jobs:
         working-directory: ./frontend
         run: yarn build
 
-      - name: Use Deno ${{ matrix.deno-version }}
+      - name: Use deno v1.x.x
         uses: denoland/setup-deno@v1
         with:
-          deno-version: ${{ matrix.deno-version }}
+          deno-version: v1.x.x
 
       - name: Cache asset compilation
         uses: actions/cache@v3
         with:
-          key: ${{ hashFiles('server/assets.js') }}
+          key: ${{ hashFiles('frontend/dist/**') }}
           path: server/assets.js,server/denobundle
 
       - name: Build assets
