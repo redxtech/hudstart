@@ -1,5 +1,4 @@
 .env
-hudstart-server
-hudstart-server.exe
+hudstart-server*
 denobundle
 assets.js
