@@ -7,7 +7,11 @@
   "tasks": {
     "run": "deno run --allow-env --allow-read --allow-run --allow-net ./main.ts",
     "dev": "deno run --allow-env --allow-read --allow-run --allow-net --watch ./main.ts",
-    "build": "./assets.sh && deno compile --allow-env --allow-read --allow-run --allow-net ./main.ts"
+    "build": "./assets.sh && deno compile --output hudstart-server --allow-env --allow-read --allow-run --allow-net ./main.ts",
+    "build-linux": "./assets.sh && deno compile --output hudstart-server --target x86_64-unknown-linux-gnu --allow-env --allow-read --allow-run --allow-net ./main.ts",
+    "build-win": "./assets.sh && deno compile --output hudstart-server --target x86_64-pc-windows-msvc --allow-env --allow-read --allow-run --allow-net ./main.ts",
+    "build-macos": "./assets.sh && deno compile --output hudstart-server --target x86_64-apple-darwin --allow-env --allow-read --allow-run --allow-net ./main.ts",
+    "build-m1": "./assets.sh && deno compile --output hudstart-server --target aarch64-apple-darwin --allow-env --allow-read --allow-run --allow-net ./main.ts"
   },
   "lint": {
     "files": {
