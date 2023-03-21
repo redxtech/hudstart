@@ -8,5 +8,45 @@
     "run": "deno run --allow-env --allow-read --allow-run --allow-net ./main.ts",
     "dev": "deno run --allow-env --allow-read --allow-run --allow-net --watch ./main.ts",
     "build": "./assets.sh && deno compile --allow-env --allow-read --allow-run --allow-net ./main.ts"
+  },
+  "lint": {
+    "files": {
+      "include": [
+        "./"
+      ],
+      "exclude": [
+        "./assets.js"
+      ]
+    },
+    "rules": {
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "camelcase",
+        "default-param-last",
+        "eqeqeq",
+        "guard-for-in",
+        "no-await-in-loop",
+        "no-const-assign",
+        "no-external-import",
+        "no-sparse-arrays"
+      ]
+    }
+  },
+  "fmt": {
+    "files": {
+      "include": [
+        "./"
+      ],
+      "exclude": [
+        "./assets.js"
+      ]
+    },
+    "options": {
+      "useTabs": true,
+      "semiColons": false,
+      "singleQuote": true
+    }
   }
 }
