@@ -1,6 +1,11 @@
 <template>
   <div class="container">
     <a-typography-title>hudstart admin page</a-typography-title>
+    <div class="token-alert" v-if="!token">
+      <a-alert type="error" message="api token not set"
+        description="the overlay will not work until this is set - click here to set your token" @click="showTokenModal"
+        show-icon />
+    </div>
     <main>
       <div class="tournament">
         <a-form name="tournament">
@@ -122,7 +127,7 @@ export default {
       conn: undefined,
       tournament: undefined,
       tournamentSlug: undefined,
-      token: "",
+      token: undefined,
       useStreamQueue: false,
       streamQueue: [],
       stream: undefined,
@@ -350,19 +355,22 @@ export default {
     },
     setToken() {
       this.tokenModalVisible = false
-      localStorage.setItem("api-token", this.token)
 
-      if (this.conn) {
-        this.conn.send(
-          JSON.stringify({
-            target: "OVERLAY",
-            type: "TOKEN",
-            value: this.token,
-          })
-        )
+      if (this.token) {
+        localStorage.setItem("api-token", this.token)
+
+        if (this.conn) {
+          this.conn.send(
+            JSON.stringify({
+              target: "OVERLAY",
+              type: "TOKEN",
+              value: this.token,
+            })
+          )
+        }
+
+        window.location.reload()
       }
-
-      window.location.reload()
     },
     showTokenModal() {
       this.tokenModalVisible = true
@@ -543,5 +551,10 @@ h1 {
 
 .tournament {
   --vs-search-input-placeholder-color: darkgray;
+}
+
+.token-alert {
+  cursor: pointer;
+  margin-bottom: 24px;
 }
 </style>
