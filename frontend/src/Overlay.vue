@@ -135,6 +135,13 @@ export default {
     }
   },
   mounted() {
+    // on page load, get the overlay from localStorage and use it
+    const overlay = localStorage.getItem("overlay");
+    if (overlay) {
+      localStorage.setItem('overlay', 'default')
+      this.overlay = 'default'
+    }
+
     // create websocket connection on mount
     this.conn = new WebSocket(WS_URL);
 
@@ -218,10 +225,6 @@ export default {
     this.conn.addEventListener("open", onOpen);
     this.conn.addEventListener("message", onMessage);
     this.conn.addEventListener("close", onClose);
-
-    // on page load, get the overlay from localStorage and use it
-    const overlay = localStorage.getItem("overlay");
-    this.overlay = overlay ? overlay : "default";
   },
   unmounted() {
     // close websocket
