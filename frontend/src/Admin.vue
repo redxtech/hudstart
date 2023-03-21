@@ -94,6 +94,10 @@
               <commentator-page :setID="set || 0" />
             </a-modal>
             <a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
+              <div>
+                <p>if you don't have one, follow the directions <a href="https://developer.start.gg/docs/authentication"
+                    target="_blank">here</a> to create one.</p>
+              </div>
               <a-form-item>
                 <a-input v-model:value="token" />
               </a-form-item>
