@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <a-typography-title> hudstart admin page </a-typography-title>
+    <a-typography-title>hudstart admin page</a-typography-title>
     <main>
       <div class="tournament">
         <a-form name="tournament">
-          <a-typography-title :level="4"> tournament url </a-typography-title>
+          <a-typography-title :level="4">tournament url</a-typography-title>
           <a-form-item>
             <a-input
               v-model:value="tournament"
@@ -22,9 +22,7 @@
               show-icon
             />
           </a-form-item>
-          <a-typography-title :level="4">
-            set selection mode
-          </a-typography-title>
+          <a-typography-title :level="4">set selection mode</a-typography-title>
           <a-form-item>
             <a-radio-group v-model:value="useStreamQueue">
               <a-radio-button :value="false">manual selection</a-radio-button>
@@ -32,7 +30,7 @@
             </a-radio-group>
           </a-form-item>
           <template v-if="useStreamQueue">
-            <a-typography-title :level="4"> select stream </a-typography-title>
+            <a-typography-title :level="4">select stream</a-typography-title>
             <v-select
               v-model="stream"
               :options="streamSelection"
@@ -46,7 +44,7 @@
             </v-select>
           </template>
           <template v-else>
-            <a-typography-title :level="4"> select event </a-typography-title>
+            <a-typography-title :level="4">select event</a-typography-title>
             <v-select
               v-model="event"
               :options="eventSelection"
@@ -93,7 +91,7 @@
               <a-button type="danger" @click="clearSet">clear</a-button>
             </a-space>
           </a-form-item>
-          <a-typography-title :level="4"> best of </a-typography-title>
+          <a-typography-title :level="4">best of</a-typography-title>
           <a-form-item>
             <a-radio-group v-model:value="bestOf">
               <a-radio-button :value="0">auto</a-radio-button>
@@ -102,7 +100,7 @@
               <a-radio-button :value="5">best of 5</a-radio-button>
             </a-radio-group>
           </a-form-item>
-          <a-typography-title :level="4"> tools </a-typography-title>
+          <a-typography-title :level="4">tools</a-typography-title>
           <a-form-item>
             <a-space>
               <a-button type="default" @click="showOverlayModal"
