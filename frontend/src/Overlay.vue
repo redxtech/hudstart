@@ -1,16 +1,7 @@
 <template>
   <main id="overlay">
-    <component
-      :is="overlayComponent"
-      :key="overlay"
-      :p1="l"
-      :p2="r"
-      :match="match"
-      :best-of="bestOf"
-      :flipPlayers="flipPlayers"
-      :event="event"
-      :grands="grands"
-    />
+    <component :is="overlayComponent" :key="overlay" :p1="l" :p2="r" :match="match" :best-of="bestOf"
+      :flipPlayers="flipPlayers" :event="event" :grands="grands" />
   </main>
 </template>
 
@@ -41,17 +32,19 @@ export default {
       variables() {
         return {
           set: this.setID,
-        };
+        }
       },
+      skip: true
       // pollInterval: 2 * 1000
     },
     videogame: {
       query: CharacterList,
       variables() {
         return {
-          game: this.set?.event?.videogame.slug || "game/ultimate",
-        };
+          game: this.set?.event?.videogame.slug,
+        }
       },
+      skip: true
     },
   },
   methods: {
@@ -90,10 +83,10 @@ export default {
         twitter,
         char: char
           ? {
-              name: char?.name,
-              img: char?.images[1].url,
-              full: char?.images[0].url,
-            }
+            name: char?.name,
+            img: char?.images[1].url,
+            full: char?.images[0].url,
+          }
           : undefined,
       };
     },
@@ -131,6 +124,13 @@ export default {
     overlayComponent() {
       return overlays[this.overlay];
     },
+  },
+  watch: {
+    setID() {
+      // if the setID is invalid, don't query the API
+      this.$apollo.queries.set.skip = !this.setID
+      this.$apollo.queries.videogame.skip = !this.setID
+    }
   },
   mounted() {
     // create websocket connection on mount
