@@ -18,6 +18,10 @@
 import { overlays } from "./components/overlays/overlays.js";
 import { InProgressSet, CharacterList } from "./queries.js";
 
+const WS_URL =
+  import.meta.env.VITE_WEBSOCKET_URL ||
+  `ws://localhost:${import.meta.env.HUDSTART_PORT || "6875"}/ws`;
+
 export default {
   data() {
     return {
@@ -130,7 +134,7 @@ export default {
   },
   mounted() {
     // create websocket connection on mount
-    this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
+    this.conn = new WebSocket(WS_URL);
 
     // send notice to admin page that the websocket has connected
     const onOpen = () => {
@@ -201,7 +205,7 @@ export default {
       this.conn = null;
       console.log("websocket closed");
       setTimeout(() => {
-        this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
+        this.conn = new WebSocket(WS_URL);
         this.conn.addEventListener("open", onOpen);
         this.conn.addEventListener("message", onMessage);
         this.conn.addEventListener("close", onClose);

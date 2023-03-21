@@ -159,6 +159,10 @@ import { overlays } from "./components/overlays/overlays.js";
 // TODO: add top 8 generator (calculate player characters from char with most game wins this tournament)
 // TODO: add preview of overlay to bottom of admin page
 
+const WS_URL =
+  import.meta.env.VITE_WEBSOCKET_URL ||
+  `ws://localhost:${import.meta.env.HUDSTART_PORT || "6875"}/ws`;
+
 // regex to match and extract data points from the url
 const urlMatch =
   /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/;
@@ -494,7 +498,7 @@ export default {
   },
   mounted() {
     // create new websocket on mount
-    this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
+    this.conn = new WebSocket(WS_URL);
 
     const onOpen = () => console.log("websocket connected");
 
@@ -538,7 +542,7 @@ export default {
       this.conn = null;
       console.log("websocket closed");
       setTimeout(() => {
-        this.conn = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
+        this.conn = new WebSocket(WS_URL);
         this.conn.addEventListener("open", onOpen);
         this.conn.addEventListener("message", onMessage);
         this.conn.addEventListener("close", onClose);

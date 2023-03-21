@@ -13,7 +13,7 @@ const httpLink = createHttpLink({
 
 // handle api authentication
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem("token") || import.meta.env.VITE_TOKEN;
+  const token = localStorage.getItem("api-token") || import.meta.env.VITE_TOKEN;
   // return the headers to the context so httpLink can read them
   return {
     headers: {
