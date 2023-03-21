@@ -186,7 +186,7 @@ export default {
             // update the whole state of the overlay data when sent from admin page
             case "STATE":
               this.setID = data.value.set;
-              this.overlay = data.value.overlay;
+              this.overlay = data.value.overlay || 'default'
               this.bestOfManual = data.value.bestOf;
               this.flipPlayers = data.value.flipPlayers;
               break;
