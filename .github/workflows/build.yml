@@ -41,6 +41,12 @@ jobs:
         working-directory: ./frontend
         run: yarn build
 
+      - name: Cache frontend build
+        uses: actions/cache@v3
+        with:
+          key: ${{ hashFiles('frontend/dist/**') }}
+          path: frontend/dist
+
       - name: Use Deno ${{ matrix.deno-version }}
         uses: denoland/setup-deno@v1
         with:
@@ -55,6 +61,12 @@ jobs:
       - name: Build assets
         working-directory: ./server
         run: deno task build-assets
+
+      - name: Cache asset compilation
+        uses: actions/cache@v3
+        with:
+          key: ${{ hashFiles('server/assets.js') }}
+          path: server/assets.js
 
       - name: Build server (linux)
         working-directory: ./server
