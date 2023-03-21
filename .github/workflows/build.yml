@@ -7,7 +7,7 @@ on:
   #   branches: [master]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,7 +44,7 @@ jobs:
           deno-version: ${{ matrix.deno-version }}
 
       - name: Cache Deno dependencies 
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.DENO_DIR }}
           key: ${{ hashFiles('deno.lock') }}
