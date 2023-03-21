@@ -43,11 +43,11 @@ jobs:
         with:
           deno-version: ${{ matrix.deno-version }}
 
-      - name: Cache Deno dependencies 
+      - name: Cache server dependencies 
         uses: actions/cache@v3
         with:
+          key: ${{ hashFiles('**/deno.lock') }}
           path: ${{ env.DENO_DIR }}
-          key: ${{ hashFiles('server/deno.lock') }}
 
       - name: Build server
         working-directory: ./server
