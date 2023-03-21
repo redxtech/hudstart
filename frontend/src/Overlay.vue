@@ -20,7 +20,6 @@ export default {
       overlay: "default",
       setID: "",
       flipPlayers: false,
-      refreshInterval: 5,
       set: {},
       bestOfManual: 0,
       videogame: {},
@@ -34,8 +33,8 @@ export default {
           set: this.setID,
         }
       },
-      skip: true
-      // pollInterval: 2 * 1000
+      skip: true,
+      pollInterval: import.meta.env.PROD ? 2 * 1000 : 0 // only poll results in prod
     },
     videogame: {
       query: CharacterList,

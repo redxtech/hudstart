@@ -173,6 +173,7 @@ export default {
         }
       },
       update: (data) => data?.event?.sets?.nodes,
+      pollInterval: import.meta.env.PROD ? 2 * 1000 : 0, // only poll results in prod
       skip: true,
     },
     streamQueue: {
