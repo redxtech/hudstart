@@ -91,3 +91,5 @@ jobs:
           prerelease: true
           commit: master
           tag: nightly
+          allowUpdates: true
+          removeArtifacts: true
