@@ -7,8 +7,4 @@ if ! test -f "./denobundle"; then
 fi
 
 # bundle up those web assets
-if test -z "$1"; then
-	./denobundle ../frontend/dist assets.js
-elif ! test -f ./assets.js; then
-	./denobundle ../frontend/dist assets.js
-fi
+./denobundle ../frontend/dist assets.js

@@ -39,13 +39,15 @@ jobs:
 
       - name: Cache asset compilation
         uses: actions/cache@v3
+        id: assets
         with:
           key: ${{ hashFiles('frontend/dist/**') }}
           path: server/assets.js
 
       - name: Build assets
+        if: steps.assets.outputs.cache-hit != 'true'
         working-directory: ./server
-        run: deno task build-assets-ci
+        run: deno task build-assets
 
       - name: Build server (linux)
         working-directory: ./server
