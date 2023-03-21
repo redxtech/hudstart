@@ -3,12 +3,15 @@ name: Build
 on:
   push:
     branches: [master]
-  # pull_request:
-  #   branches: [master]
+    # tags:
+    #   - '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     strategy:
       matrix:
@@ -16,7 +19,7 @@ jobs:
         node-version: [16.x]
 
     env:
-      DENO_DIR: deno-cache-dir
+      DENO_DIR: /deno-cache-dir
 
 
     steps:
@@ -49,6 +52,17 @@ jobs:
           key: ${{ hashFiles('**/deno.lock') }}
           path: ${{ env.DENO_DIR }}
 
-      - name: Build server
+      - name: Build server (linux)
         working-directory: ./server
-        run: deno task build
+        run: deno task build-linux
+
+      - name: Build server (windows)
+        working-directory: ./server
+        run: deno task build-win
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "server/hudstart-server*"
+          prerelease: true
+          commit: master
