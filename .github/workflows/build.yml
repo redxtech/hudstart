@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.DENO_DIR }}
-          key: ${{ hashFiles('deno.lock') }}
+          key: ${{ hashFiles('server/deno.lock') }}
 
       - name: Build server
         working-directory: ./server
