@@ -33,12 +33,6 @@ jobs:
         working-directory: ./frontend
         run: yarn
 
-      - name: Cache frontend build
-        uses: actions/cache@v3
-        with:
-          key: ${{ hashFiles('frontend/dist/**') }}
-          path: frontend/dist
-
       - name: Build frontend
         working-directory: ./frontend
         run: yarn build
@@ -78,6 +72,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "server/hudstart-server*"
+          body: this release is based off the latest commit to `master`, and as such, is highly unstable.
           prerelease: true
           commit: master
           tag: nightly
