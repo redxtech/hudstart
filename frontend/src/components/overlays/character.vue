@@ -24,37 +24,28 @@
     </div>
     <div class="name name-r">
       <p>
-        <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }}</span
-        ><span v-if="p2.tag" class="tag">[{{ p2.tag }}]</span>{{ p2.name
-        }}<span v-if="grands" class="winners">[L]</span>
+        <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }}</span><span v-if="p2.tag" class="tag">[{{ p2.tag
+        }}]</span>{{ p2.name }}<span v-if="grands" class="winners">[L]</span>
       </p>
     </div>
     <div class="border-l"></div>
     <div class="border-r"></div>
-    <div
-      v-if="p1.char?.full"
-      class="char char-l"
-      :class="{ flip: flipPlayers }"
-    >
+    <div v-if="p1.char?.full" class="char char-l" :class="{ flip: flipPlayers }">
       <img :src="p1.char.full" :alt="p1.char.name" />
     </div>
-    <div
-      v-if="p2.char?.full"
-      class="char char-r"
-      :class="{ flip: flipPlayers }"
-    >
+    <div v-if="p2.char?.full" class="char char-r" :class="{ flip: flipPlayers }">
       <img :src="p2.char.full" :alt="p2.char.name" />
     </div>
   </div>
 </template>
 
 <script>
-import props from "./props.js";
+import props from './props.js'
 
 export default {
-  name: "Character Overlay",
-  props,
-};
+  name: 'Character Overlay',
+  props
+}
 </script>
 
 <style scoped>

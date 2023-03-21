@@ -30,21 +30,19 @@
 </template>
 
 <script>
-import props from "./props.js";
+import props from './props.js'
 
 export default {
-  name: "Default Overlay",
+  name: 'Default Overlay',
   props,
-};
+}
 </script>
 
 <style scoped>
 #default-overlay {
   display: grid;
   grid-template:
-    [row1-start] "name-l score-l separator score-r name-r" 60px [row1-end]
-    [row2-start] "match  match   separator best-of best-of" 50px [row2-end]
-    / 1fr 60px 110px 60px 1fr;
+    [row1-start] "name-l score-l separator score-r name-r" 60px [row1-end] [row2-start] "match  match   separator best-of best-of" 50px [row2-end] / 1fr 60px 110px 60px 1fr;
 
   margin: 30px auto 0;
   width: 800px;

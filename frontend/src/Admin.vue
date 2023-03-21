@@ -6,21 +6,13 @@
         <a-form name="tournament">
           <a-typography-title :level="4">tournament url</a-typography-title>
           <a-form-item>
-            <a-input
-              v-model:value="tournament"
-              style="width: 100%"
-              placeholder="https://start.gg/tournament/..."
-            />
+            <a-input v-model:value="tournament" style="width: 100%" placeholder="https://start.gg/tournament/..." />
           </a-form-item>
           <a-form-item v-if="!tournamentValid && tournament">
             <a-alert message="invalid tournament url" type="error" show-icon />
           </a-form-item>
           <a-form-item v-if="tournamentNotFound && tournamentValid">
-            <a-alert
-              message="tournament not found or has no events"
-              type="error"
-              show-icon
-            />
+            <a-alert message="tournament not found or has no events" type="error" show-icon />
           </a-form-item>
           <a-typography-title :level="4">set selection mode</a-typography-title>
           <a-form-item>
@@ -31,13 +23,8 @@
           </a-form-item>
           <template v-if="useStreamQueue">
             <a-typography-title :level="4">select stream</a-typography-title>
-            <v-select
-              v-model="stream"
-              :options="streamSelection"
-              :filterable="false"
-              placeholder="select a stream"
-              class="selector"
-            >
+            <v-select v-model="stream" :options="streamSelection" :filterable="false" placeholder="select a stream"
+              class="selector">
               <template #no-options>
                 <em style="opacity: 0.5">no streams available</em>
               </template>
@@ -45,36 +32,20 @@
           </template>
           <template v-else>
             <a-typography-title :level="4">select event</a-typography-title>
-            <v-select
-              v-model="event"
-              :options="eventSelection"
-              :reduce="(event) => event.value"
-              :filterable="false"
-              :loading="!hasEventLoaded(event)"
-              placeholder="select an event"
-              class="selector"
-            >
+            <v-select v-model="event" :options="eventSelection" :reduce="(event) => event.value" :filterable="false"
+              :loading="!hasEventLoaded(event)" placeholder="select an event" class="selector">
               <template #no-options>
                 <em style="opacity: 0.5">no events available</em>
               </template>
             </v-select>
           </template>
           <a-typography-title :level="4"> select a set </a-typography-title>
-          <v-select
-            v-model="set"
-            :options="setSelection"
-            :reduce="(set) => set.value"
-            :disabled="!this.event && !(this.useStreamQueue && this.stream)"
-            :loading="!hasSetLoaded(set)"
-            placeholder="select a set"
-            class="selector"
-          >
+          <v-select v-model="set" :options="setSelection" :reduce="(set) => set.value"
+            :disabled="!this.event && !(this.useStreamQueue && this.stream)" :loading="!hasSetLoaded(set)"
+            placeholder="select a set" class="selector">
             <template v-slot:no-options="{ search, searching }">
               <template v-if="searching">
-                <span style="opacity: 0.5"
-                  >no sets matching <em>{{ search }}</em
-                  >.</span
-                >
+                <span style="opacity: 0.5">no sets matching <em>{{ search }}</em>.</span>
               </template>
               <em v-else style="opacity: 0.5">no sets available</em>
             </template>
@@ -103,43 +74,21 @@
           <a-typography-title :level="4">tools</a-typography-title>
           <a-form-item>
             <a-space>
-              <a-button type="default" @click="showOverlayModal"
-                >choose overlay</a-button
-              >
-              <a-button type="default" @click="showCommentatorModal"
-                >show commentator modal</a-button
-              >
+              <a-button type="default" @click="showOverlayModal">choose overlay</a-button>
+              <a-button type="default" @click="showCommentatorModal">show commentator modal</a-button>
               <!-- <a-button type="default">show top 8 generator</a-button> -->
-              <a-button type="default" @click="showTokenModal"
-                >set api token</a-button
-              >
+              <a-button type="default" @click="showTokenModal">set api token</a-button>
             </a-space>
-            <a-modal
-              v-model:visible="overlayModalVisible"
-              title="choose overlay"
-              @ok="setOverlay"
-            >
+            <a-modal v-model:visible="overlayModalVisible" title="choose overlay" @ok="setOverlay">
               <a-form-item>
-                <v-select
-                  v-model="overlay"
-                  :options="overlaySelection"
-                  :reduce="(overlay) => overlay.overlay"
-                  class="selector"
-                />
+                <v-select v-model="overlay" :options="overlaySelection" :reduce="(overlay) => overlay.overlay"
+                  class="selector" />
               </a-form-item>
             </a-modal>
-            <a-modal
-              v-model:visible="commentatorModalVisible"
-              title="commentator information"
-              @ok="hideCommentatorModal"
-            >
+            <a-modal v-model:visible="commentatorModalVisible" title="commentator information" @ok="hideCommentatorModal">
               <commentator-page :setID="set || 0" />
             </a-modal>
-            <a-modal
-              v-model:visible="tokenModalVisible"
-              title="set api token"
-              @ok="setToken"
-            >
+            <a-modal v-model:visible="tokenModalVisible" title="set api token" @ok="setToken">
               <a-form-item>
                 <a-input v-model:value="token" />
               </a-form-item>
@@ -161,11 +110,10 @@ import { overlays } from "./components/overlays/overlays.js";
 
 const WS_URL =
   import.meta.env.VITE_WEBSOCKET_URL ||
-  `ws://localhost:${import.meta.env.HUDSTART_PORT || "6875"}/ws`;
-
+  `ws://localhost:${import.meta.env.HUDSTART_PORT || "6875"}/ws`
 // regex to match and extract data points from the url
 const urlMatch =
-  /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/;
+  /(?:https:\/\/)?(?:www\.)?start\.gg\/(tournament\/[^\/\n]*)(\/event\/[^\/\n]*)?(?:\/set\/)?(\d{8})?/
 
 export default {
   name: "Admin",
@@ -195,9 +143,9 @@ export default {
       commentatorModalVisible: false,
       tokenModalVisible: false,
       filterOption: (input, option) => {
-        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
       },
-    };
+    }
   },
   apollo: {
     events: {
@@ -205,7 +153,7 @@ export default {
       variables() {
         return {
           tourney: this.tournamentSlug,
-        };
+        }
       },
       update: (data) => data?.tournament?.events,
       skip: true,
@@ -217,7 +165,7 @@ export default {
           event: this.event || "",
           page: this.setPage,
           perPage: this.perPage,
-        };
+        }
       },
       update: (data) => data?.event?.sets?.nodes,
       skip: true,
@@ -227,7 +175,7 @@ export default {
       variables() {
         return {
           tourney: this.tournamentSlug,
-        };
+        }
       },
       update: (data) => data?.tournament?.streamQueue,
       skip: true,
@@ -236,12 +184,12 @@ export default {
   computed: {
     // if tournament url is valid
     tournamentValid() {
-      return urlMatch.test(this.tournament);
+      return urlMatch.test(this.tournament)
     },
     // determine if a tournament is found with that slug
     tournamentNotFound() {
       // only return true if events is empty and events query not loading
-      return !this.events && !this.$apolloData.queries.events.loading;
+      return !this.events && !this.$apolloData.queries.events.loading
     },
     // formatted list of events for the select element
     eventSelection() {
@@ -250,18 +198,18 @@ export default {
           return {
             label: e.name,
             value: e.slug,
-          };
-        });
+          }
+        })
       } else {
-        return [];
+        return []
       }
     },
     // formatted list of streams for the select element
     streamSelection() {
       if (this.streamQueue) {
-        return this.streamQueue.map((s) => s.stream?.streamName);
+        return this.streamQueue.map((s) => s.stream?.streamName)
       } else {
-        return [];
+        return []
       }
     },
     // formatted list of sets for the select element
@@ -277,10 +225,10 @@ export default {
               return {
                 label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
                 value: s.id,
-              };
-            });
+              }
+            })
         } else {
-          return [];
+          return []
         }
       } else {
         if (this.sets) {
@@ -300,10 +248,10 @@ export default {
               return {
                 label: `[${s.phaseGroup.phase.name}] ${s.fullRoundText} - ${s.slots[0].entrant.participants[0].gamerTag} vs. ${s.slots[1].entrant.participants[0].gamerTag}`,
                 value: s.id,
-              };
-            });
+              }
+            })
         } else {
-          return [];
+          return []
         }
       }
     },
@@ -313,8 +261,8 @@ export default {
         return {
           label: overlays[overlay].name,
           overlay,
-        };
-      });
+        }
+      })
     },
   },
   methods: {
@@ -327,26 +275,26 @@ export default {
             type: "SET",
             value: this.set?.toString(),
           })
-        );
+        )
       }
     },
     // send clear signal to the overlay via websocket
     clearSet() {
-      this.set = undefined;
+      this.set = undefined
       if (this.conn) {
         this.conn.send(
           JSON.stringify({
             target: "OVERLAY",
             type: "CLEAR",
           })
-        );
+        )
       }
     },
     // fetch the next page of sets from the graphql api
     getMoreSets() {
       // only if the event is valid and more sets exist
       if (this.event && this.moreSets) {
-        this.updatePage++;
+        this.updatePage++
         this.$apollo.queries.sets.fetchMore({
           // New variables
           variables: {
@@ -357,7 +305,7 @@ export default {
           updateQuery: (previousResult, { fetchMoreResult }) => {
             this.moreSets =
               fetchMoreResult.event.sets.pageInfo.page <
-              fetchMoreResult.event.sets.pageInfo.totalPages;
+              fetchMoreResult.event.sets.pageInfo.totalPages
 
             return {
               event: {
@@ -372,17 +320,17 @@ export default {
                   ],
                 },
               },
-            };
+            }
           },
-        });
+        })
       }
     },
     showOverlayModal() {
-      this.overlayModalVisible = true;
+      this.overlayModalVisible = true
     },
     setOverlay() {
-      this.overlayModalVisible = false;
-      localStorage.setItem("overlay", this.overlay);
+      this.overlayModalVisible = false
+      localStorage.setItem("overlay", this.overlay)
 
       if (this.conn) {
         this.conn.send(
@@ -391,18 +339,18 @@ export default {
             type: "OVERLAY",
             value: this.overlay,
           })
-        );
+        )
       }
     },
     showCommentatorModal() {
-      this.commentatorModalVisible = true;
+      this.commentatorModalVisible = true
     },
     hideCommentatorModal() {
-      this.commentatorModalVisible = false;
+      this.commentatorModalVisible = false
     },
     setToken() {
-      this.tokenModalVisible = false;
-      localStorage.setItem("api-token", this.token);
+      this.tokenModalVisible = false
+      localStorage.setItem("api-token", this.token)
 
       if (this.conn) {
         this.conn.send(
@@ -411,65 +359,65 @@ export default {
             type: "TOKEN",
             value: this.token,
           })
-        );
+        )
       }
 
-      window.location.reload();
+      window.location.reload()
     },
     showTokenModal() {
-      this.tokenModalVisible = true;
+      this.tokenModalVisible = true
     },
     hasEventLoaded(slug) {
-      return !this.event || this.events.some((s) => s.slug === slug);
+      return !this.event || this.events.some((s) => s.slug === slug)
     },
     hasSetLoaded(id) {
-      return !this.set || this.sets.some((s) => s.id === id);
+      return !this.set || this.sets.some((s) => s.id === id)
     },
   },
   watch: {
     // when the tournament url is changed, tell the rest of the page what needs to be updated
     tournament() {
       // unest selected stream
-      this.stream = undefined;
+      this.stream = undefined
 
       // split the url into parts to be used
-      const urlParts = urlMatch.exec(this.tournament);
+      const urlParts = urlMatch.exec(this.tournament)
 
       // if urlParts is valid, it's safe to assume that at least the tournament slug is present
       if (urlParts) {
         // set tournament slug
-        this.tournamentSlug = urlParts[1];
+        this.tournamentSlug = urlParts[1]
         // set event slug if present in url
-        this.event = urlParts[2] ? urlParts[1] + urlParts[2] : undefined;
+        this.event = urlParts[2] ? urlParts[1] + urlParts[2] : undefined
         // set set if present in url
-        this.set = parseInt(urlParts[3]) || undefined;
+        this.set = parseInt(urlParts[3]) || undefined
       }
 
       // if the tournamentSlug is invalid, don't query the API
-      this.$apollo.queries.events.skip = !this.tournamentSlug;
-      this.$apollo.queries.streamQueue.skip = !this.tournamentSlug;
+      this.$apollo.queries.events.skip = !this.tournamentSlug
+      this.$apollo.queries.streamQueue.skip = !this.tournamentSlug
     },
     // unset current set when using stream queue status changes
     useStreamQueue() {
-      this.set = undefined;
+      this.set = undefined
     },
     // when event changes, see if set can be pulled from the url
     event() {
       // split url into parts again
-      const urlParts = urlMatch.exec(this.tournament);
+      const urlParts = urlMatch.exec(this.tournament)
 
       // if there is no event specified by the url, unset the set
       if (!urlParts[2]) {
-        this.set = undefined;
+        this.set = undefined
       }
 
       // on event changes, reset variables to query the next pages of set data
-      this.moreSets = true;
-      this.setPage = 1;
-      this.updatePage = 1;
+      this.moreSets = true
+      this.setPage = 1
+      this.updatePage = 1
 
       // only query sets from api if event is valid
-      this.$apollo.queries.sets.skip = !this.event;
+      this.$apollo.queries.sets.skip = !this.event
     },
     // sent current bestOf to the overlay
     bestOf() {
@@ -480,7 +428,7 @@ export default {
             type: "BESTOF",
             value: this.bestOf,
           })
-        );
+        )
       }
     },
     // sent current flip status to the overlay
@@ -492,20 +440,20 @@ export default {
             type: "FLIP",
             value: this.flipPlayers,
           })
-        );
+        )
       }
     },
   },
   mounted() {
     // create new websocket on mount
-    this.conn = new WebSocket(WS_URL);
+    this.conn = new WebSocket(WS_URL)
 
-    const onOpen = () => console.log("websocket connected");
+    const onOpen = () => console.log("websocket connected")
 
     // handle websocket messages based on their content
     const onMessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
+        const data = JSON.parse(event.data)
 
         // only handle messages targeting the admin page
         if (data.target === "ADMIN") {
@@ -524,59 +472,59 @@ export default {
                       flipPlayers: this.flipPlayers,
                     },
                   })
-                );
+                )
               }
-              break;
+              break
             default:
-              break;
+              break
           }
         }
       } catch (e) {
-        console.error("couldn't parse websocket message:", e);
+        console.error("couldn't parse websocket message:", e)
       }
-    };
+    }
 
     // when the socket closes, log it and set a timeout to try and reconnect
     // this will run every time a connection fails as well, so it will keep trying until connected
     const onClose = () => {
-      this.conn = null;
-      console.log("websocket closed");
+      this.conn = null
+      console.log("websocket closed")
       setTimeout(() => {
-        this.conn = new WebSocket(WS_URL);
-        this.conn.addEventListener("open", onOpen);
-        this.conn.addEventListener("message", onMessage);
-        this.conn.addEventListener("close", onClose);
-      }, 3000);
-    };
+        this.conn = new WebSocket(WS_URL)
+        this.conn.addEventListener("open", onOpen)
+        this.conn.addEventListener("message", onMessage)
+        this.conn.addEventListener("close", onClose)
+      }, 3000)
+    }
 
     // add all event listeners to the socket
-    this.conn.addEventListener("open", onOpen);
-    this.conn.addEventListener("message", onMessage);
-    this.conn.addEventListener("close", onClose);
+    this.conn.addEventListener("open", onOpen)
+    this.conn.addEventListener("message", onMessage)
+    this.conn.addEventListener("close", onClose)
 
     // create an interval to keep getting more sets from the paginated sets query
     this.moreSetsInterval = setInterval(() => {
       // getMoreSets has a check to not run if sets are up to date
-      this.getMoreSets();
-    }, 1 * 1000);
+      this.getMoreSets()
+    }, 1 * 1000)
 
     // pull api token and current overylay from local storage
-    this.token = localStorage.getItem("api-token") || undefined;
-    this.overlay = localStorage.getItem("overlay") || undefined;
+    this.token = localStorage.getItem("api-token") || undefined
+    this.overlay = localStorage.getItem("overlay") || undefined
   },
   unmounted() {
     // close websocket
-    this.conn.removeEventListener("close", onClose);
-    this.conn.close();
-    this.conn = null;
+    this.conn.removeEventListener("close", onClose)
+    this.conn.close()
+    this.conn = null
 
     // cancel getMoreSets interval
-    clearInterval(this.moreSetsInterval);
+    clearInterval(this.moreSetsInterval)
   },
   components: {
     CommentatorPage,
   },
-};
+}
 </script>
 
 <style scoped>
