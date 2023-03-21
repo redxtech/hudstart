@@ -128,7 +128,10 @@ export default {
     setID() {
       // if the setID is invalid, don't query the API
       this.$apollo.queries.set.skip = !this.setID
-      this.$apollo.queries.videogame.skip = !this.setID
+    },
+    set() {
+      // if the set videogame is invalid, don't query the API
+      this.$apollo.queries.videogame.skip = !this.set?.event?.videogame
     }
   },
   mounted() {
