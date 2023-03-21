@@ -19,7 +19,7 @@ jobs:
         node-version: [16.x]
 
     env:
-      DENO_DIR: /deno-cache-dir
+      DENO_DIR: deno-cache-dir
 
 
     steps:
