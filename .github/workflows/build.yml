@@ -25,6 +25,7 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
+        working-directory: ./frontend
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
