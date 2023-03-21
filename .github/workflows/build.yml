@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v3
         with:
           key: ${{ hashFiles('frontend/dist/**') }}
-          path: server/assets.js,server/denobundle
+          path: server/assets.js
 
       - name: Build assets
         working-directory: ./server
