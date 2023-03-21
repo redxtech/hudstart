@@ -78,3 +78,4 @@ jobs:
           artifacts: "server/hudstart-server*"
           prerelease: true
           commit: master
+          tag: nightly
