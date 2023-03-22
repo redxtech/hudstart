@@ -61,4 +61,5 @@ jobs:
         with:
           artifacts: "server/hudstart-server*"
           body: latest release of hudstart! download it here, and check out the readme for directions on how to use it!
+          generateReleaseNotes: true
           makeLatest: true
