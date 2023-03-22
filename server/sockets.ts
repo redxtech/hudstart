@@ -27,6 +27,8 @@ export const handleSocketReq = (
 	// upgrade the connection to a websocket
 	const { socket, response } = Deno.upgradeWebSocket(req)
 
+	// TODO: only log when not in prod
+
 	// some handling for each new socket
 	socket.onopen = () => {
 		// give each socket a unique uid and add it to the sockets map

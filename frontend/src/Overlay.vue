@@ -55,7 +55,7 @@ export default {
         `player ${pIndex ? "two" : "one"} name`;
       const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || "";
       const fullTag = tag ? `[${tag}] ${name}` : name;
-      const score = set?.slots?.[pIndex]?.standing.stats.score.value || 0;
+      const score = set?.slots?.[pIndex]?.standing?.stats?.score?.value || 0;
       const pronouns =
         set?.slots?.[pIndex]?.entrant.participants[0]?.player?.user
           ?.genderPronoun;
