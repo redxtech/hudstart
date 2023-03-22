@@ -34,7 +34,7 @@ const main = async () => {
 
 	// start up the server and log it
 	const server = Deno.listen({ port })
-	console.log('listening on port', port)
+	console.log(`listening at http://localhost:${port}`)
 
 	// open browser windows if running prod
 	if (Deno.env.get('HUDSTART_PROD') !== 'FALSE') {
