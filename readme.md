@@ -8,5 +8,5 @@ all you need to do to get started is download a binary from the releases page (o
 
 you will need to generate an API key when you first use it, which it will tell you how to create. then all you need to do is paste in a link to the tournament you want to stream!
 
-## adding the overlay to OBS
+## adding the overlay to OBS/StreamLabs
 under sources, you will need to create a new browser source. under URL, put `http://localhost:6875`, set width and height to `1920` and `1080`, and make sure `refresh browser when scene becomes active` is checked.
