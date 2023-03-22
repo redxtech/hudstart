@@ -17,17 +17,6 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v3
 
-      - name: Use node v16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: yarn
-          cache-dependency-path: ./frontend/yarn.lock
-
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: yarn
-
       - name: Cache frontend build
         uses: actions/cache@v3
         id: frontend
@@ -35,12 +24,33 @@ jobs:
           key: ${{ hashFiles('frontend/**') }}
           path: frontend/dist
 
+      - name: Use node v16.x
+        if: steps.frontend.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+          cache-dependency-path: ./frontend/yarn.lock
+
+      - name: Install frontend dependencies
+        if: steps.frontend.outputs.cache-hit != 'true'
+        working-directory: ./frontend
+        run: yarn
+
       - name: Build frontend
         if: steps.frontend.outputs.cache-hit != 'true'
         working-directory: ./frontend
         run: yarn build
 
+      - name: Cache server build
+        uses: actions/cache@v3
+        id: server
+        with:
+          key: ${{ hashFiles('server/**') }}
+          path: server/hudstart*
+
       - name: Use deno v1.x.x
+        if: steps.server.outputs.cache-hit != 'true'
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x.x
@@ -56,13 +66,6 @@ jobs:
         if: steps.assets.outputs.cache-hit != 'true'
         working-directory: ./server
         run: deno task build-assets
-
-      - name: Cache server build
-        uses: actions/cache@v3
-        id: server
-        with:
-          key: ${{ hashFiles('server/**') }}
-          path: server/hudstart*
 
       - name: Build server (linux)
         if: steps.server.outputs.cache-hit != 'true'
