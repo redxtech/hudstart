@@ -1,10 +1,9 @@
-name: Build
+name: Release
 
 on:
   push:
-    branches: [master]
-    # tags:
-    #   - '*'
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -28,15 +27,7 @@ jobs:
         working-directory: ./frontend
         run: yarn
 
-      - name: Cache frontend build
-        uses: actions/cache@v3
-        id: frontend
-        with:
-          key: ${{ hashFiles('frontend/**') }}
-          path: frontend/dist
-
       - name: Build frontend
-        if: steps.frontend.outputs.cache-hit != 'true'
         working-directory: ./frontend
         run: yarn build
 
@@ -45,15 +36,7 @@ jobs:
         with:
           deno-version: v1.x.x
 
-      - name: Cache asset compilation
-        uses: actions/cache@v3
-        id: assets
-        with:
-          key: ${{ hashFiles('frontend/dist/**') }}
-          path: server/assets.js
-
       - name: Build assets
-        if: steps.assets.outputs.cache-hit != 'true'
         working-directory: ./server
         run: deno task build-assets
 
@@ -65,13 +48,17 @@ jobs:
         working-directory: ./server
         run: deno task build-win
 
+      - name: Build server (macos)
+        working-directory: ./server
+        run: deno task build-macos
+
+      - name: Build server (m1)
+        working-directory: ./server
+        run: deno task build-m1
+
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "server/hudstart-server*"
-          body: this release is based off the latest commit to `master`, and as such, is highly unstable. only use this if you know what you are doing.
-          prerelease: true
-          commit: master
-          tag: nightly
-          allowUpdates: true
-          removeArtifacts: true
+          body: latest release of hudstart! download it here, and check out the readme for directions on how to use it!
+          makeLatest: true
