@@ -63,7 +63,7 @@
           </a-form-item>
           <a-form-item>
             <a-space>
-              <a-button type="primary" @click="updateSet">save</a-button>
+              <a-button type="primary" @click="updateSet">update set</a-button>
               <a-button type="danger" @click="clearSet">clear</a-button>
             </a-space>
           </a-form-item>
