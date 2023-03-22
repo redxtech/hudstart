@@ -64,7 +64,7 @@
           <a-form-item>
             <a-space>
               <a-button type="primary" @click="updateSet">update set</a-button>
-              <a-button type="danger" @click="clearSet">clear</a-button>
+              <a-button type="danger" @click="clearSet">clear set</a-button>
             </a-space>
           </a-form-item>
           <a-typography-title :level="4">best of</a-typography-title>
