@@ -57,15 +57,25 @@ jobs:
         working-directory: ./server
         run: deno task build-assets
 
+      - name: Cache server build
+        uses: actions/cache@v3
+        id: server
+        with:
+          key: ${{ hashFiles('server/**') }}
+          path: server/hudstart*
+
       - name: Build server (linux)
+        if: steps.server.outputs.cache-hit != 'true'
         working-directory: ./server
         run: deno task build-linux
 
       - name: Build server (windows)
+        if: steps.server.outputs.cache-hit != 'true'
         working-directory: ./server
         run: deno task build-win
 
       - name: Publish release
+        if: steps.server.outputs.cache-hit != 'true'
         uses: ncipollo/release-action@v1
         with:
           artifacts: "server/hudstart-server*"
