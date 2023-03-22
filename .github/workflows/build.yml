@@ -42,6 +42,11 @@ jobs:
         working-directory: ./frontend
         run: yarn build
 
+      - name: Use deno v1.x.x
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x.x
+
       - name: Cache asset compilation
         uses: actions/cache@v3
         id: assets
@@ -49,23 +54,17 @@ jobs:
           key: ${{ hashFiles('frontend/dist/**') }}
           path: server/assets.js
 
+      - name: Build assets
+        if: steps.assets.outputs.cache-hit != 'true'
+        working-directory: ./server
+        run: deno task build-assets
+
       - name: Cache server build
         uses: actions/cache@v3
         id: server
         with:
           key: ${{ hashFiles('server/**') }}
           path: server/hudstart*
-
-      - name: Use deno v1.x.x
-        if: steps.server.outputs.cache-hit != 'true' || steps.assets.outputs.cache-hit != 'true'
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: v1.x.x
-
-      - name: Build assets
-        if: steps.assets.outputs.cache-hit != 'true'
-        working-directory: ./server
-        run: deno task build-assets
 
       - name: Build server (linux)
         if: steps.server.outputs.cache-hit != 'true'
