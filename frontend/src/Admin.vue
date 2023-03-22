@@ -403,7 +403,7 @@ export default {
         // set event slug if present in url
         this.event = urlParts[2] ? urlParts[1] + urlParts[2] : undefined
         // set set if present in url
-        this.set = parseInt(urlParts[3]) || undefined
+        this.set = urlParts[3] || undefined
       }
 
       // if the tournamentSlug is invalid, don't query the API
@@ -483,6 +483,7 @@ export default {
                       overlay: this.overlay,
                       bestOf: this.bestOf,
                       flipPlayers: this.flipPlayers,
+                      token: this.token,
                     },
                   })
                 )

@@ -166,7 +166,7 @@ export default {
           switch (data.type) {
             // update set when sent from admin page
             case "SET":
-              if (data.value.length === 8 && parseInt(data.value)) {
+              if (data.value.length >= 8) {
                 this.setID = data.value.toString();
               }
               break;
@@ -189,6 +189,11 @@ export default {
               this.overlay = data.value.overlay || 'default'
               this.bestOfManual = data.value.bestOf;
               this.flipPlayers = data.value.flipPlayers;
+              this.token = data.value.token;
+              if (data.value.token && !localStorage.getItem('api-token')) {
+                localStorage.setItem('api-token', date.value.token)
+                window.location.reload()
+              }
               break;
             // clear the set when signalled from the admin page
             case "CLEAR":
