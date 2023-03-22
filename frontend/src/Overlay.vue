@@ -49,18 +49,18 @@ export default {
   methods: {
     // return a player object of selected player from the current set
     createPlayer(set, pIndex) {
-      const id = set?.slots?.[pIndex]?.entrant.participants[0].player?.id;
+      const id = set?.slots?.[pIndex]?.entrant?.participants[0].player?.id;
       const name =
-        set?.slots?.[pIndex]?.entrant.participants[0].gamerTag ||
+        set?.slots?.[pIndex]?.entrant?.participants[0].gamerTag ||
         `player ${pIndex ? "two" : "one"} name`;
-      const tag = set?.slots?.[pIndex]?.entrant.participants[0].prefix || "";
+      const tag = set?.slots?.[pIndex]?.entrant?.participants[0].prefix || "";
       const fullTag = tag ? `[${tag}] ${name}` : name;
       const score = set?.slots?.[pIndex]?.standing?.stats?.score?.value || 0;
       const pronouns =
-        set?.slots?.[pIndex]?.entrant.participants[0]?.player?.user
+        set?.slots?.[pIndex]?.entrant?.participants[0]?.player?.user
           ?.genderPronoun;
       const twitter =
-        set?.slots?.[pIndex]?.entrant.participants[0]?.player?.user
+        set?.slots?.[pIndex]?.entrant?.participants[0]?.player?.user
           ?.authorizations?.[0]?.externalUsername;
 
       const charID = set?.games
