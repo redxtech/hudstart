@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       conn: undefined,
-      overlay: "default",
+      overlay: undefined,
       setID: "",
       flipPlayers: false,
       set: {},
@@ -104,13 +104,13 @@ export default {
       return this.flipPlayers ? this.p1 : this.p2;
     },
     match() {
-      return this.set.fullRoundText || "unknown round";
+      return this.set?.fullRoundText || "unknown round";
     },
     bestOf() {
       // if bestOfManual is 0, that means use API for bestOf
       return this.bestOfManual === 0
-        ? this.set.setGamesType === 1
-          ? this.set.totalGames
+        ? this.set?.setGamesType === 1
+          ? this.set?.totalGames
           : 3
         : this.bestOfManual;
     },
@@ -118,7 +118,7 @@ export default {
       return this.set?.event?.name || "unknown event";
     },
     grands() {
-      return this.set.fullRoundText === "Grand Final";
+      return this.set?.fullRoundText === "Grand Final";
     },
     overlayComponent() {
       return overlays[this.overlay];
@@ -136,11 +136,7 @@ export default {
   },
   mounted() {
     // on page load, get the overlay from localStorage and use it
-    const overlay = localStorage.getItem("overlay");
-    if (overlay) {
-      localStorage.setItem('overlay', 'default')
-      this.overlay = 'default'
-    }
+    this.overlay = localStorage.getItem('overlay') || 'default'
 
     // create websocket connection on mount
     this.conn = new WebSocket(WS_URL);
@@ -164,12 +160,6 @@ export default {
         // only handle messages targeted at the overlay
         if (data.target === "OVERLAY") {
           switch (data.type) {
-            // update set when sent from admin page
-            case "SET":
-              if (data.value.length >= 8) {
-                this.setID = data.value.toString();
-              }
-              break;
             // update the overlay when sent from admin page
             case "OVERLAY":
               this.overlay = data.value;
@@ -185,7 +175,9 @@ export default {
               break;
             // update the whole state of the overlay data when sent from admin page
             case "STATE":
-              this.setID = data.value.set;
+              if (data.value.set >= 8) {
+                this.setID = data.value.set;
+              }
               this.overlay = data.value.overlay || 'default'
               this.bestOfManual = data.value.bestOf;
               this.flipPlayers = data.value.flipPlayers;
@@ -195,9 +187,12 @@ export default {
                 window.location.reload()
               }
               break;
-            // clear the set when signalled from the admin page
-            case "CLEAR":
+            // reset the overlay when signalled from the admin page
+            case "RESET":
               this.setID = undefined;
+              this.set = undefined;
+              this.flipPlayers = undefined;
+              this.bestOfManual = 0;
               break;
             // set the token in localstorage and reload the page when sent new token from admin page
             case "TOKEN":

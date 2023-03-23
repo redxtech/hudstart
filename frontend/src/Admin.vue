@@ -61,12 +61,6 @@
           <a-form-item class="filter-switch" label="swap players">
             <a-switch v-model:checked="flipPlayers" />
           </a-form-item>
-          <a-form-item>
-            <a-space>
-              <a-button type="primary" @click="updateSet">update set</a-button>
-              <a-button type="danger" @click="clearSet">clear set</a-button>
-            </a-space>
-          </a-form-item>
           <a-typography-title :level="4">best of</a-typography-title>
           <a-form-item>
             <a-radio-group v-model:value="bestOf">
@@ -75,6 +69,12 @@
               <a-radio-button :value="3">best of 3</a-radio-button>
               <a-radio-button :value="5">best of 5</a-radio-button>
             </a-radio-group>
+          </a-form-item>
+          <a-form-item>
+            <a-space>
+              <a-button type="primary" @click="updateOverlay">update overlay</a-button>
+              <a-button type="danger" @click="resetOverlay">reset overlay</a-button>
+            </a-space>
           </a-form-item>
           <a-typography-title :level="4">tools</a-typography-title>
           <a-form-item>
@@ -147,7 +147,7 @@ export default {
       showCompleted: true,
       flipPlayers: false,
       bestOf: 0,
-      overlay: "default",
+      overlay: undefined,
       overlayModalVisible: false,
       commentatorModalVisible: false,
       tokenModalVisible: false,
@@ -276,26 +276,37 @@ export default {
     },
   },
   methods: {
-    // send new set ID to the overlay via websocket
-    updateSet() {
+    // send new info to the overlay via websocket
+    updateOverlay() {
       if (this.conn) {
         this.conn.send(
           JSON.stringify({
             target: "OVERLAY",
-            type: "SET",
-            value: this.set?.toString(),
+            type: "STATE",
+            value: {
+              set: this.set?.toString(),
+              overlay: this.overlay,
+              bestOf: this.bestOf,
+              flipPlayers: this.flipPlayers,
+              token: this.token,
+            },
           })
         )
       }
     },
     // send clear signal to the overlay via websocket
-    clearSet() {
+    resetOverlay() {
+      // reset values to default
       this.set = undefined
+      this.flipPlayers = false
+      this.bestOf = 0
+
+      // tell overlay to reset
       if (this.conn) {
         this.conn.send(
           JSON.stringify({
             target: "OVERLAY",
-            type: "CLEAR",
+            type: "RESET",
           })
         )
       }
@@ -403,7 +414,7 @@ export default {
         // set event slug if present in url
         this.event = urlParts[2] ? urlParts[1] + urlParts[2] : undefined
         // set set if present in url
-        this.set = urlParts[3] || undefined
+        this.set = parseInt(urlParts[3]) || undefined
       }
 
       // if the tournamentSlug is invalid, don't query the API
@@ -432,30 +443,6 @@ export default {
       // only query sets from api if event is valid
       this.$apollo.queries.sets.skip = !this.event
     },
-    // sent current bestOf to the overlay
-    bestOf() {
-      if (this.conn) {
-        this.conn.send(
-          JSON.stringify({
-            target: "OVERLAY",
-            type: "BESTOF",
-            value: this.bestOf,
-          })
-        )
-      }
-    },
-    // sent current flip status to the overlay
-    flipPlayers() {
-      if (this.conn) {
-        this.conn.send(
-          JSON.stringify({
-            target: "OVERLAY",
-            type: "FLIP",
-            value: this.flipPlayers,
-          })
-        )
-      }
-    },
   },
   mounted() {
     // create new websocket on mount
@@ -479,7 +466,7 @@ export default {
                     target: "OVERLAY",
                     type: "STATE",
                     value: {
-                      set: this.set,
+                      set: this.set?.toString(),
                       overlay: this.overlay,
                       bestOf: this.bestOf,
                       flipPlayers: this.flipPlayers,
