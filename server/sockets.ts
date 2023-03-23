@@ -28,28 +28,29 @@ export const handleSocketReq = (
 	const { socket, response } = Deno.upgradeWebSocket(req)
 
 	// TODO: only log when not in prod
+	const isProd = Deno.env.get('HUDSTART_PROD') !== 'FALSE'
 
 	// some handling for each new socket
 	socket.onopen = () => {
 		// give each socket a unique uid and add it to the sockets map
 		const uid = v1.generate().toString()
-		console.log('connected socket:', uid)
+		isProd || console.log('connected socket:', uid)
 		sockets.set(uid, socket)
 
 		// log important events
 		socket.onclose = () => {
-			console.log('closing socket:', uid)
+			isProd || console.log('closing socket:', uid)
 		}
 
 		// on each message, forward it to all other connect sockets
 		socket.onmessage = (e) => {
-			console.log('broadcast:', e.data)
+			isProd || console.log('broadcast:', e.data)
 			broadcast(sockets, e.data, uid)
 		}
 
 		// log error events
 		socket.onerror = (e) => {
-			console.log('socket errored:', e)
+			isProd || console.log('socket errored:', e)
 		}
 	}
 

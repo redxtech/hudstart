@@ -33,19 +33,30 @@ const main = async () => {
 	const port = parseInt(Deno.env.get('HUDSTART_PORT') || '6875')
 
 	// start up the server and log it
-	const server = Deno.listen({ port })
-	console.log(`listening at: http://localhost:${port}`)
-	console.log(`admin page:   http://localhost:${port}/admin.html`)
+	try {
+		const server = Deno.listen({ port })
+		console.log('hudstart server has started!\n')
+		console.log(`overlay:    http://localhost:${port}`)
+		console.log(`admin page: http://localhost:${port}/admin.html\n`)
 
-	// open browser windows if running prod
-	if (Deno.env.get('HUDSTART_PROD') !== 'FALSE') {
-		open(`http://localhost:${port}`)
-		open(`http://localhost:${port}/admin.html`)
-	}
+		// open browser windows if running prod
+		if (Deno.env.get('HUDSTART_PROD') !== 'FALSE') {
+			open(`http://localhost:${port}`)
+			open(`http://localhost:${port}/admin.html`)
+		}
 
-	// handle each connection of the server
-	for await (const conn of server) {
-		handle(conn)
+		// handle each connection of the server
+		for await (const conn of server) {
+			handle(conn)
+		}
+	} catch (err) {
+		if (err instanceof Deno.errors.AddrInUse) {
+			console.error(
+				`port ${port} is already in use. is hudstart already running?`,
+			)
+		} else {
+			console.error('unknown error occurred:', err)
+		}
 	}
 }
 
