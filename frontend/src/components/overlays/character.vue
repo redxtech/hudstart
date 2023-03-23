@@ -13,7 +13,8 @@
     <div class="name name-l">
       <p>
         <span v-if="p1.tag" class="tag">[{{ p1.tag }}]</span>{{ p1.name
-        }}<span v-if="p1.pronouns" class="pronouns">{{ p1.pronouns }}</span>
+        }}<span v-if="grands && p1.losers" class="winners">[L]</span><span v-if="p1.pronouns" class="pronouns">{{
+  p1.pronouns }}</span>
       </p>
     </div>
     <div class="score score-l">
@@ -25,7 +26,7 @@
     <div class="name name-r">
       <p>
         <span v-if="p2.pronouns" class="pronouns">{{ p2.pronouns }}</span><span v-if="p2.tag" class="tag">[{{ p2.tag
-        }}]</span>{{ p2.name }}<span v-if="grands" class="winners">[L]</span>
+        }}]</span>{{ p2.name }}<span v-if="grands && p2.losers" class="winners">[L]</span>
       </p>
     </div>
     <div class="border-l"></div>

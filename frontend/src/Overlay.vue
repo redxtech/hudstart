@@ -56,6 +56,7 @@ export default {
       const tag = set?.slots?.[pIndex]?.entrant?.participants[0].prefix || "";
       const fullTag = tag ? `[${tag}] ${name}` : name;
       const score = set?.slots?.[pIndex]?.standing?.stats?.score?.value || 0;
+      const losers = pIndex === 1
       const pronouns =
         set?.slots?.[pIndex]?.entrant?.participants[0]?.player?.user
           ?.genderPronoun;
@@ -78,6 +79,7 @@ export default {
         tag,
         fullTag,
         score,
+        losers,
         pronouns,
         twitter,
         char: char

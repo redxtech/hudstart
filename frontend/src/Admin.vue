@@ -445,6 +445,10 @@ export default {
     },
   },
   mounted() {
+    // pull api token and current overylay from local storage
+    this.token = localStorage.getItem("api-token") || undefined
+    this.overlay = localStorage.getItem("overlay") || undefined
+
     // create new websocket on mount
     this.conn = new WebSocket(WS_URL)
 
@@ -508,10 +512,6 @@ export default {
       // getMoreSets has a check to not run if sets are up to date
       this.getMoreSets()
     }, 1 * 1000)
-
-    // pull api token and current overylay from local storage
-    this.token = localStorage.getItem("api-token") || undefined
-    this.overlay = localStorage.getItem("overlay") || undefined
   },
   unmounted() {
     // close websocket
