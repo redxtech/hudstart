@@ -29,6 +29,8 @@ export const StreamQueue = gql`
           id
           fullRoundText
           phaseGroup {
+            id
+            bracketType
             phase {
               name
             }
@@ -67,6 +69,8 @@ export const SetsInEvent = gql`
           createdAt
           startedAt
           phaseGroup {
+            id
+            bracketType
             phase {
               name
             }
