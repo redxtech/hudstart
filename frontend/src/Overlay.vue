@@ -177,7 +177,7 @@ export default {
               break;
             // update the whole state of the overlay data when sent from admin page
             case "STATE":
-              if (data.value.set >= 8) {
+              if (data.value.set) {
                 this.setID = data.value.set;
               }
               this.overlay = data.value.overlay || 'default'
