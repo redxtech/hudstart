@@ -76,6 +76,16 @@ jobs:
         working-directory: ./server
         run: deno task build-win
 
+      - name: Build server (macOS)
+        if: steps.server.outputs.cache-hit != 'true'
+        working-directory: ./server
+        run: deno task build-macos
+
+      - name: Build server (macOS M1)
+        if: steps.server.outputs.cache-hit != 'true'
+        working-directory: ./server
+        run: deno task build-m1
+
       - name: Publish release
         if: steps.server.outputs.cache-hit != 'true'
         uses: ncipollo/release-action@v1
