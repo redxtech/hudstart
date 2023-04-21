@@ -106,7 +106,10 @@ export default {
       return this.flipPlayers ? this.p1 : this.p2;
     },
     match() {
-      return this.set?.fullRoundText || "unknown round";
+      return (this.set?.phaseGroup?.bracketType === "ROUND_ROBIN"
+        ? "Round Robin"
+        : this.set?.fullRoundText)
+        || "unknown round";
     },
     bestOf() {
       // if bestOfManual is 0, that means use API for bestOf

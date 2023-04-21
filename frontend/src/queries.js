@@ -106,6 +106,10 @@ export const InProgressSet = gql`
           slug
         }
       }
+      phaseGroup {
+        id
+        bracketType
+      }
       slots {
         entrant {
           id
