@@ -9,7 +9,12 @@
     <main>
       <div class="tournament">
         <a-form name="tournament">
-          <a-typography-title :level="4">tournament url</a-typography-title>
+          <a-typography-title :level="4">
+            tournament url
+            <a v-if="tournamentValid" class="tourney-link" :href="tournament" target="_blank">
+              <IconExternalLink />
+            </a>
+          </a-typography-title>
           <a-form-item>
             <a-input v-model:value="tournament" style="width: 100%" placeholder="https://start.gg/tournament/..." />
           </a-form-item>
@@ -70,6 +75,8 @@
               <a-radio-button :value="5">best of 5</a-radio-button>
             </a-radio-group>
           </a-form-item>
+          <!-- add input(s) to set caster name/tag -->
+          <!-- add input to change top/horizontal margin of overlay -->
           <a-form-item>
             <a-space>
               <a-button type="primary" @click="updateOverlay">update overlay</a-button>
@@ -110,6 +117,7 @@
 </template>
 
 <script>
+import IconExternalLink from '~icons/mdi/external-link'
 import CommentatorPage from "./components/commentator.vue";
 import { EventsInTourney, SetsInEvent, StreamQueue } from "./queries.js";
 import { overlays } from "./components/overlays/overlays.js";
@@ -524,6 +532,7 @@ export default {
   },
   components: {
     CommentatorPage,
+    IconExternalLink
   },
 }
 </script>
@@ -549,5 +558,10 @@ h1 {
 .token-alert {
   cursor: pointer;
   margin-bottom: 24px;
+}
+
+.tourney-link {
+  position: relative;
+  bottom: -3.5px;
 }
 </style>
